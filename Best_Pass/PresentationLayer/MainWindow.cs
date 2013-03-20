@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Best_Pass.BusinessLayer;
 using GeneticEngine.Graph;
+using GeneticEngine.Track;
 using Microsoft.Glee;
 using Microsoft.Glee.Drawing;
 using GleeColor = Microsoft.Glee.Drawing.Color;
@@ -18,12 +19,12 @@ namespace Best_Pass.PresentationLayer
     {
         private int _points;
         private Microsoft.Glee.GraphViewerGdi.GViewer _viewer;
-        private GraphController _graphController;
+        private MainController _mainController;
         public MainWindow()
         {
             _viewer = new Microsoft.Glee.GraphViewerGdi.GViewer();
             InitializeComponent();
-            _graphController = new GraphController();
+            _mainController = new MainController();
         }
 
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
@@ -41,7 +42,7 @@ namespace Best_Pass.PresentationLayer
         private void RenderDataGridGraph()
         {
             RibsDataGridView.Rows.Clear();
-            IGraph graph = _graphController.GetGraph();
+            IGraph graph = _mainController.GetGraph();
             for (int i = 0; i < graph.CountOfRibs; i++)
             {
                 Rib rib = graph.GetRib(i);
@@ -54,7 +55,7 @@ namespace Best_Pass.PresentationLayer
             if (e.RowIndex > -1)
             {
                 string weight = RibsDataGridView[2, e.RowIndex].Value.ToString();
-                _graphController.ChangeWeightOfRip(e.RowIndex, Convert.ToDouble(weight));
+                _mainController.ChangeWeightOfRip(e.RowIndex, Convert.ToDouble(weight));
                 RenderViewGraph();
             }
         }
@@ -62,12 +63,12 @@ namespace Best_Pass.PresentationLayer
         private void CreateGraph()
         {
             _points = Convert.ToInt16(AddPointsTextBox.Text);
-            _graphController.CreateGraph(_points);
+            _mainController.CreateGraph(_points);
         }
 
         private void RenderViewGraph()
         {
-            IGraph pureGraph = _graphController.GetGraph();
+            IGraph pureGraph = _mainController.GetGraph();
             Graph graph = new Graph("graph");
             for (int i = 0; i < pureGraph.CountOfRibs; i++)
             {
@@ -156,11 +157,13 @@ namespace Best_Pass.PresentationLayer
             TechnicalGraphGroupBox.Height = this.Height - 138;  // панель с табличным представление графа
             RibsDataGridView.Height = this.Height - 163;        // таблично представление графа
 
-            SavePersonsButton.Location = new System.Drawing.Point(SavePersonsButton.Location.X, this.Height - 152); // 
-            LoadPersonsButton.Location = new System.Drawing.Point(LoadPersonsButton.Location.X, this.Height - 152);
-            ApplyPersonsButton.Location = new System.Drawing.Point(ApplyPersonsButton.Location.X, this.Height - 152);
+            SavePersonsButton.Location = new System.Drawing.Point(SavePersonsButton.Location.X, this.Height - 167); 
+            LoadPersonsButton.Location = new System.Drawing.Point(LoadPersonsButton.Location.X, this.Height - 167);
+            AddPersonsButton.Location = new System.Drawing.Point(AddPersonsButton.Location.X, this.Height - 167);
+            DeletePersonsButton.Location = new System.Drawing.Point(DeletePersonsButton.Location.X, this.Height - 167);
 
-            PersonsDataGridView.Height = this.Height - 164;
+            PersonsGroupBox.Height = this.Height - 138;
+            PersonsDataGridView.Height = this.Height - 212;
 
             GraphViewGroupBox.Height = this.Height - 138;
             GraphViewGroupBox.Width = this.Width - 510;
@@ -181,7 +184,7 @@ namespace Best_Pass.PresentationLayer
             SaveFileDialog.Filter = "XML (*.xml)|*.xml|All files (*.*)|*.*";
             if (SaveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                _graphController.SaveGraph(SaveFileDialog.FileName);
+                _mainController.SaveGraph(SaveFileDialog.FileName);
             }
         }
 
@@ -197,10 +200,102 @@ namespace Best_Pass.PresentationLayer
             OpenFileDialog.Filter = "XML (*.xml)|*.xml|All files (*.*)|*.*";
             if (OpenFileDialog.ShowDialog() == DialogResult.OK)
             {
-                _graphController.OpenGraph(OpenFileDialog.FileName);
+                _mainController.OpenGraph(OpenFileDialog.FileName);
             }
             RenderDataGridGraph();
             RenderViewGraph();
+        }
+
+        private void AddPersonsButton_Click(object sender, EventArgs e)
+        {
+            object[] obj = new object[2];
+            obj[0] = PersonsDataGridView.Rows.Count;
+            obj[1] = "";
+            PersonsDataGridView.Rows.Add(obj);
+        }
+
+        private void DeletePersonsButton_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < PersonsDataGridView.Rows.Count; i++)
+            {
+                if (PersonsDataGridView.Rows[i].Selected)
+                {
+                    PersonsDataGridView.Rows.RemoveAt(i);
+                }
+            }
+            for (int i = 0; i < PersonsDataGridView.Rows.Count; i++)
+            {
+                PersonsDataGridView[0, i].Value = i;
+            }
+        }
+
+        private void PersonsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (PersonsDataGridView.Rows.Count > 0)
+            {
+                List<int[]> persons = new List<int[]>();
+                char[] separator = {' '};
+                for (int i = 0; i < PersonsDataGridView.Rows.Count; i++)
+                {
+                    if (PersonsDataGridView[1, i].Value.ToString() != "")
+                    {
+                        string[] person = PersonsDataGridView[1, i].Value.ToString().Trim().Split(separator);
+                        int[] per = new int[person.Length];
+                        for (int j = 0; j < per.Length; j++)
+                        {
+                            per[j] = Convert.ToInt16(person[j]);
+                        }
+                        persons.Add(per);
+                    }
+                }
+                _mainController.CreatePersons(persons);
+            }
+        }
+
+        private void SavePersonsButton_Click(object sender, EventArgs e)
+        {
+            DirectoryInfo graphDirectory = new DirectoryInfo(Directory.GetParent(Directory.GetCurrentDirectory()) + @"\Persons");
+            if (!graphDirectory.Exists)
+            {
+                graphDirectory.Create();
+            }
+            SaveFileDialog.InitialDirectory = graphDirectory.ToString();
+            SaveFileDialog.DefaultExt = "txt";
+            SaveFileDialog.Filter = "Text (*.txt)|*.txt|All files (*.*)|*.*";
+            if (SaveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _mainController.SavePersons(SaveFileDialog.FileName);
+            }
+        }
+
+        private void LoadPersonsButton_Click(object sender, EventArgs e)
+        {
+            DirectoryInfo graphDirectory = new DirectoryInfo(Directory.GetParent(Directory.GetCurrentDirectory()) + @"\Persons");
+            if (!graphDirectory.Exists)
+            {
+                graphDirectory.Create();
+            }
+            OpenFileDialog.InitialDirectory = graphDirectory.ToString();
+            OpenFileDialog.DefaultExt = "txt";
+            OpenFileDialog.Filter = "Text (*.txt)|*.txt|All files (*.*)|*.*";
+            if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _mainController.LoadPersons(OpenFileDialog.FileName);
+            }
+
+            AbstractTrack[] tracks = _mainController.GetPersons();
+            for (int i = 0; i < tracks.Length; i++)
+            {
+                string person = "";
+                for (int j = 0; j < tracks[i].Genotype.Length; j++)
+                {
+                    person += tracks[i].Genotype[j].ToString() + " ";
+                }
+                object[] obj = new object[2];
+                obj[0] = i;
+                obj[1] = person;
+                PersonsDataGridView.Rows.Add(obj);
+            }
         }
     }
 }

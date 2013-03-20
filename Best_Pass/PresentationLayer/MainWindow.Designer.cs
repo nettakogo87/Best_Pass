@@ -46,10 +46,15 @@
             this.GraphicGraphGroupBox = new System.Windows.Forms.GroupBox();
             this.GraphPictureBox = new System.Windows.Forms.PictureBox();
             this.PersonSettingsTabPage = new System.Windows.Forms.TabPage();
+            this.PersonsGroupBox = new System.Windows.Forms.GroupBox();
+            this.AddPersonsButton = new System.Windows.Forms.Button();
+            this.DeletePersonsButton = new System.Windows.Forms.Button();
             this.LoadPersonsButton = new System.Windows.Forms.Button();
             this.SavePersonsButton = new System.Windows.Forms.Button();
-            this.ApplyPersonsButton = new System.Windows.Forms.Button();
+            this.PersonsTipsLabel = new System.Windows.Forms.Label();
             this.PersonsDataGridView = new System.Windows.Forms.DataGridView();
+            this.Number = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Track = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GraphViewGroupBox = new System.Windows.Forms.GroupBox();
             this.GraphViewPictureBox = new System.Windows.Forms.PictureBox();
             this.AlgorithmTabPage = new System.Windows.Forms.TabPage();
@@ -115,6 +120,7 @@
             this.GraphicGraphGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GraphPictureBox)).BeginInit();
             this.PersonSettingsTabPage.SuspendLayout();
+            this.PersonsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PersonsDataGridView)).BeginInit();
             this.GraphViewGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GraphViewPictureBox)).BeginInit();
@@ -301,10 +307,7 @@
             // 
             // PersonSettingsTabPage
             // 
-            this.PersonSettingsTabPage.Controls.Add(this.LoadPersonsButton);
-            this.PersonSettingsTabPage.Controls.Add(this.SavePersonsButton);
-            this.PersonSettingsTabPage.Controls.Add(this.ApplyPersonsButton);
-            this.PersonSettingsTabPage.Controls.Add(this.PersonsDataGridView);
+            this.PersonSettingsTabPage.Controls.Add(this.PersonsGroupBox);
             this.PersonSettingsTabPage.Controls.Add(this.GraphViewGroupBox);
             this.PersonSettingsTabPage.Location = new System.Drawing.Point(4, 22);
             this.PersonSettingsTabPage.Name = "PersonSettingsTabPage";
@@ -314,40 +317,97 @@
             this.PersonSettingsTabPage.Text = "Редактор особей";
             this.PersonSettingsTabPage.UseVisualStyleBackColor = true;
             // 
+            // PersonsGroupBox
+            // 
+            this.PersonsGroupBox.Controls.Add(this.AddPersonsButton);
+            this.PersonsGroupBox.Controls.Add(this.DeletePersonsButton);
+            this.PersonsGroupBox.Controls.Add(this.LoadPersonsButton);
+            this.PersonsGroupBox.Controls.Add(this.SavePersonsButton);
+            this.PersonsGroupBox.Controls.Add(this.PersonsTipsLabel);
+            this.PersonsGroupBox.Controls.Add(this.PersonsDataGridView);
+            this.PersonsGroupBox.Location = new System.Drawing.Point(7, 6);
+            this.PersonsGroupBox.Name = "PersonsGroupBox";
+            this.PersonsGroupBox.Size = new System.Drawing.Size(442, 419);
+            this.PersonsGroupBox.TabIndex = 5;
+            this.PersonsGroupBox.TabStop = false;
+            this.PersonsGroupBox.Text = "Первичное поколение";
+            // 
+            // AddPersonsButton
+            // 
+            this.AddPersonsButton.Location = new System.Drawing.Point(208, 390);
+            this.AddPersonsButton.Name = "AddPersonsButton";
+            this.AddPersonsButton.Size = new System.Drawing.Size(105, 23);
+            this.AddPersonsButton.TabIndex = 7;
+            this.AddPersonsButton.Text = "Добавить строку";
+            this.AddPersonsButton.UseVisualStyleBackColor = true;
+            this.AddPersonsButton.Click += new System.EventHandler(this.AddPersonsButton_Click);
+            // 
+            // DeletePersonsButton
+            // 
+            this.DeletePersonsButton.Location = new System.Drawing.Point(319, 390);
+            this.DeletePersonsButton.Name = "DeletePersonsButton";
+            this.DeletePersonsButton.Size = new System.Drawing.Size(117, 23);
+            this.DeletePersonsButton.TabIndex = 6;
+            this.DeletePersonsButton.Text = "Удалить выбранное";
+            this.DeletePersonsButton.UseVisualStyleBackColor = true;
+            this.DeletePersonsButton.Click += new System.EventHandler(this.DeletePersonsButton_Click);
+            // 
             // LoadPersonsButton
             // 
-            this.LoadPersonsButton.Location = new System.Drawing.Point(88, 405);
+            this.LoadPersonsButton.Location = new System.Drawing.Point(91, 390);
             this.LoadPersonsButton.Name = "LoadPersonsButton";
             this.LoadPersonsButton.Size = new System.Drawing.Size(75, 23);
             this.LoadPersonsButton.TabIndex = 4;
             this.LoadPersonsButton.Text = "Загрузить";
             this.LoadPersonsButton.UseVisualStyleBackColor = true;
+            this.LoadPersonsButton.Click += new System.EventHandler(this.LoadPersonsButton_Click);
             // 
             // SavePersonsButton
             // 
-            this.SavePersonsButton.Location = new System.Drawing.Point(7, 405);
+            this.SavePersonsButton.Location = new System.Drawing.Point(10, 390);
             this.SavePersonsButton.Name = "SavePersonsButton";
             this.SavePersonsButton.Size = new System.Drawing.Size(75, 23);
             this.SavePersonsButton.TabIndex = 3;
             this.SavePersonsButton.Text = "Сохранить";
             this.SavePersonsButton.UseVisualStyleBackColor = true;
+            this.SavePersonsButton.Click += new System.EventHandler(this.SavePersonsButton_Click);
             // 
-            // ApplyPersonsButton
+            // PersonsTipsLabel
             // 
-            this.ApplyPersonsButton.Location = new System.Drawing.Point(375, 405);
-            this.ApplyPersonsButton.Name = "ApplyPersonsButton";
-            this.ApplyPersonsButton.Size = new System.Drawing.Size(75, 23);
-            this.ApplyPersonsButton.TabIndex = 2;
-            this.ApplyPersonsButton.Text = "Применить";
-            this.ApplyPersonsButton.UseVisualStyleBackColor = true;
+            this.PersonsTipsLabel.AutoSize = true;
+            this.PersonsTipsLabel.Location = new System.Drawing.Point(7, 20);
+            this.PersonsTipsLabel.Name = "PersonsTipsLabel";
+            this.PersonsTipsLabel.Size = new System.Drawing.Size(233, 13);
+            this.PersonsTipsLabel.TabIndex = 5;
+            this.PersonsTipsLabel.Text = "Номера городов указываются через пробел";
             // 
             // PersonsDataGridView
             // 
+            this.PersonsDataGridView.AllowUserToAddRows = false;
+            this.PersonsDataGridView.AllowUserToDeleteRows = false;
             this.PersonsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.PersonsDataGridView.Location = new System.Drawing.Point(6, 6);
+            this.PersonsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Number,
+            this.Track});
+            this.PersonsDataGridView.Location = new System.Drawing.Point(10, 39);
             this.PersonsDataGridView.Name = "PersonsDataGridView";
-            this.PersonsDataGridView.Size = new System.Drawing.Size(444, 393);
+            this.PersonsDataGridView.RowHeadersVisible = false;
+            this.PersonsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.PersonsDataGridView.Size = new System.Drawing.Size(426, 345);
             this.PersonsDataGridView.TabIndex = 1;
+            this.PersonsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.PersonsDataGridView_CellValueChanged);
+            // 
+            // Number
+            // 
+            this.Number.HeaderText = "№";
+            this.Number.Name = "Number";
+            this.Number.ReadOnly = true;
+            // 
+            // Track
+            // 
+            this.Track.HeaderText = "Путь";
+            this.Track.Name = "Track";
+            this.Track.Width = 320;
             // 
             // GraphViewGroupBox
             // 
@@ -357,7 +417,7 @@
             this.GraphViewGroupBox.Size = new System.Drawing.Size(421, 419);
             this.GraphViewGroupBox.TabIndex = 0;
             this.GraphViewGroupBox.TabStop = false;
-            this.GraphViewGroupBox.Text = "Графическое представление";
+            this.GraphViewGroupBox.Text = "Граф";
             // 
             // GraphViewPictureBox
             // 
@@ -927,6 +987,8 @@
             this.GraphicGraphGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.GraphPictureBox)).EndInit();
             this.PersonSettingsTabPage.ResumeLayout(false);
+            this.PersonsGroupBox.ResumeLayout(false);
+            this.PersonsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PersonsDataGridView)).EndInit();
             this.GraphViewGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.GraphViewPictureBox)).EndInit();
@@ -1024,7 +1086,6 @@
         private System.Windows.Forms.TabPage PersonSettingsTabPage;
         private System.Windows.Forms.DataGridView PersonsDataGridView;
         private System.Windows.Forms.GroupBox GraphViewGroupBox;
-        private System.Windows.Forms.Button ApplyPersonsButton;
         private System.Windows.Forms.PictureBox GraphViewPictureBox;
         private System.Windows.Forms.Button SaveGraphButton;
         private System.Windows.Forms.Button LoadGraphButton;
@@ -1033,6 +1094,12 @@
         private System.Windows.Forms.Button LoadAlgorithmButton;
         private System.Windows.Forms.OpenFileDialog OpenFileDialog;
         private System.Windows.Forms.SaveFileDialog SaveFileDialog;
+        private System.Windows.Forms.GroupBox PersonsGroupBox;
+        private System.Windows.Forms.Label PersonsTipsLabel;
+        private System.Windows.Forms.Button AddPersonsButton;
+        private System.Windows.Forms.Button DeletePersonsButton;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Number;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Track;
     }
 }
 
