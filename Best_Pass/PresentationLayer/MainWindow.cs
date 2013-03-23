@@ -20,11 +20,17 @@ namespace Best_Pass.PresentationLayer
         private int _points;
         private Microsoft.Glee.GraphViewerGdi.GViewer _viewer;
         private MainController _mainController;
+
         public MainWindow()
         {
             _viewer = new Microsoft.Glee.GraphViewerGdi.GViewer();
             InitializeComponent();
             _mainController = new MainController();
+            RenderDataGridGraph();
+//            RenderViewGraph();
+            RenderDataGridPersons();
+            RenderAlgorithm();
+            RenderLaunchMode();
         }
 
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
@@ -37,6 +43,7 @@ namespace Best_Pass.PresentationLayer
             CreateGraph();
             RenderDataGridGraph();
             RenderViewGraph();
+            RenderDataGridPersons();
         }
 
         private void RenderDataGridGraph()
@@ -62,8 +69,11 @@ namespace Best_Pass.PresentationLayer
 
         private void CreateGraph()
         {
+            int scopeStart = Convert.ToInt16(ScopeStartTextBox.Text);
+            int scopeEnd = Convert.ToInt16(ScopeEndTextBox.Text);
             _points = Convert.ToInt16(AddPointsTextBox.Text);
-            _mainController.CreateGraph(_points);
+            _mainController.CreateGraph(_points, scopeStart, scopeEnd);
+            _mainController.CreatePersons();
         }
 
         private void RenderViewGraph()
@@ -203,15 +213,12 @@ namespace Best_Pass.PresentationLayer
                 _mainController.OpenGraph(OpenFileDialog.FileName);
             }
             RenderDataGridGraph();
-            RenderViewGraph();
+//            RenderViewGraph();
         }
 
         private void AddPersonsButton_Click(object sender, EventArgs e)
         {
-            object[] obj = new object[2];
-            obj[0] = PersonsDataGridView.Rows.Count;
-            obj[1] = "";
-            PersonsDataGridView.Rows.Add(obj);
+            PersonsDataGridView.Rows.Add(PersonsDataGridView.Rows.Count, "");
         }
 
         private void DeletePersonsButton_Click(object sender, EventArgs e)
@@ -282,7 +289,12 @@ namespace Best_Pass.PresentationLayer
             {
                 _mainController.LoadPersons(OpenFileDialog.FileName);
             }
+            RenderDataGridPersons();
+        }
 
+        private void RenderDataGridPersons()
+        {
+            PersonsDataGridView.Rows.Clear();
             AbstractTrack[] tracks = _mainController.GetPersons();
             for (int i = 0; i < tracks.Length; i++)
             {
@@ -291,11 +303,421 @@ namespace Best_Pass.PresentationLayer
                 {
                     person += tracks[i].Genotype[j].ToString() + " ";
                 }
-                object[] obj = new object[2];
-                obj[0] = i;
-                obj[1] = person;
-                PersonsDataGridView.Rows.Add(obj);
+                PersonsDataGridView.Rows.Add(i, person);
             }
+        }
+
+        private void RenderAlgorithm()
+        {
+            if (_mainController.GetAlgorithmMode() == (int)MainController.AlgorithmMode.Singl)
+            {
+                SingAlgorithmRadioButton.Checked = true;
+            }
+            if (_mainController.GetAlgorithmMode() == (int)MainController.AlgorithmMode.Quality)
+            {
+                ComparisonAlgorithmRadioButton.Checked = true;
+            }
+            if (_mainController.GetAlgorithmMode() == (int)MainController.AlgorithmMode.Search)
+            {
+                SearchBestAlgorithmRadioButton.Checked = true;
+            }
+
+            if (_mainController.GetFitnessFunction().GetName() == "BestReps")
+            {
+                BestRepsRadioButton.Checked = true;
+                BestRepsTextBox.Text = _mainController.GetFitnessFunctionParametr().ToString();
+            }
+            if (_mainController.GetFitnessFunction().GetName() == "GenerationCounter")
+            {
+                NumberOfGenerationsRadioButton.Checked = true;
+                BestRepsTextBox.Text = _mainController.GetFitnessFunctionParametr().ToString();
+            }
+            if (_mainController.GetFitnessFunction().GetName() == "ReachWantedResult")
+            {
+                NumberOfGenerationsRadioButton.Checked = true;
+                BestRepsTextBox.Text = _mainController.GetFitnessFunctionParametr().ToString();
+            }
+
+            if (_mainController.GetMutation().GetName() == "FourPointMutation")
+            {
+                FourPointMCheckBox.Checked = true;
+            }
+            if (_mainController.GetMutation().GetName() == "TwoPointMutation")
+            {
+                TwoPointMCheckBox.Checked = true;
+            }
+            if (_mainController.GetMutation().GetName() == "NotRandomMutation")
+            {
+                NotRandomMCheckBox.Checked = true;
+            }
+
+            if (_mainController.GetSelection().GetName() == "RankingSelection")
+            {
+                RankingSCheckBox.Checked = true;
+            }
+            if (_mainController.GetSelection().GetName() == "RouletteSelection")
+            {
+                RouletteSCheckBox.Checked = true;
+            }
+            if (_mainController.GetSelection().GetName() == "TournamentSelection")
+            {
+                TournamentSCheckBox.Checked = true;
+            }
+
+            if (_mainController.GetCrossingover().GetName() == "CyclicalCrossingover")
+            {
+                CyclicalCCheckBox.Checked = true;
+            }
+            if (_mainController.GetCrossingover().GetName() == "InversionCrossingover")
+            {
+                InversionCCheckBox.Checked = true;
+            }
+            if (_mainController.GetCrossingover().GetName() == "OnePointCrossingover")
+            {
+                OnePointCCheckBox.Checked = true;
+            }
+            if (_mainController.GetCrossingover().GetName() == "TwoPointCrossingover")
+            {
+                TwoPointMCheckBox.Checked = true;
+            }
+            ProbablyOfMutationTextBox.Text = _mainController.GetPMutation().ToString();
+            ProbablyOfSelectionTextBox.Text = _mainController.GetPSelection().ToString();
+        }
+
+        private void NumberOfGenerationsRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            NumberOfGenerationsLabel.Enabled = true;
+            NumberOfGenerationsTextBox.Enabled = true;
+            BestRepsLabel.Enabled = false;
+            BestRepsTextBox.Enabled = false;
+            AchieveBetterLabel.Enabled = false;
+            AchieveBetterTextBox.Enabled = false;
+        }
+
+        private void BestRepsRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            NumberOfGenerationsLabel.Enabled = false;
+            NumberOfGenerationsTextBox.Enabled = false;
+            BestRepsLabel.Enabled = true;
+            BestRepsTextBox.Enabled = true;
+            AchieveBetterLabel.Enabled = false;
+            AchieveBetterTextBox.Enabled = false;
+
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void AchieveBetterRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            NumberOfGenerationsLabel.Enabled = false;
+            NumberOfGenerationsTextBox.Enabled = false;
+            BestRepsLabel.Enabled = false;
+            BestRepsTextBox.Enabled = false;
+            AchieveBetterLabel.Enabled = true;
+            AchieveBetterTextBox.Enabled = true;
+
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void SearchBestAlgorithmRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            ProbablyOfMutationTextBox.Text = "100";
+            ProbablyOfMutationTextBox.Enabled = false;
+            ProbablyOfSelectionTextBox.Text = "100";
+            ProbablyOfSelectionTextBox.Enabled = false;
+
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void ComparisonAlgorithmRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            ProbablyOfMutationTextBox.Text = "100";
+            ProbablyOfMutationTextBox.Enabled = false;
+            ProbablyOfSelectionTextBox.Text = "100";
+            ProbablyOfSelectionTextBox.Enabled = false;
+
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void SingAlgorithmRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            ProbablyOfMutationTextBox.Enabled = true;
+            ProbablyOfSelectionTextBox.Enabled = true;
+            if (SingAlgorithmRadioButton.Checked)
+            {
+                FourPointMCheckBox.Checked = false;
+                TwoPointMCheckBox.Checked = false;
+                NotRandomMCheckBox.Checked = true;
+
+                RankingSCheckBox.Checked = false;
+                RouletteSCheckBox.Checked = false;
+                TournamentSCheckBox.Checked = true;
+
+                InversionCCheckBox.Checked = false;
+                OnePointCCheckBox.Checked = false;
+                TwoPointCCheckBox.Checked = false;
+                CyclicalCCheckBox.Checked = true;
+            }
+
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void FourPointMCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SingAlgorithmRadioButton.Checked && FourPointMCheckBox.Checked)
+            {
+                TwoPointMCheckBox.Checked = false;
+                NotRandomMCheckBox.Checked = false;
+            }
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void TwoPointMCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SingAlgorithmRadioButton.Checked && TwoPointMCheckBox.Checked)
+            {
+                FourPointMCheckBox.Checked = false;
+                NotRandomMCheckBox.Checked = false;
+            }
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void NotRandomMCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SingAlgorithmRadioButton.Checked && NotRandomMCheckBox.Checked)
+            {
+                TwoPointMCheckBox.Checked = false;
+                FourPointMCheckBox.Checked = false;
+            }
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void TournamentSCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SingAlgorithmRadioButton.Checked && TournamentSCheckBox.Checked)
+            {
+                RankingSCheckBox.Checked = false;
+                RouletteSCheckBox.Checked = false;
+            }
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void RankingSCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SingAlgorithmRadioButton.Checked && RankingSCheckBox.Checked)
+            {
+                TournamentSCheckBox.Checked = false;
+                RouletteSCheckBox.Checked = false;
+            }
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void RouletteSCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SingAlgorithmRadioButton.Checked && RouletteSCheckBox.Checked)
+            {
+                TournamentSCheckBox.Checked = false;
+                RankingSCheckBox.Checked = false;
+            }
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void CyclicalCCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SingAlgorithmRadioButton.Checked && CyclicalCCheckBox.Checked)
+            {
+                InversionCCheckBox.Checked = false;
+                OnePointCCheckBox.Checked = false;
+                TwoPointCCheckBox.Checked = false;
+            }
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void InversionCCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SingAlgorithmRadioButton.Checked && InversionCCheckBox.Checked)
+            {
+                CyclicalCCheckBox.Checked = false;
+                OnePointCCheckBox.Checked = false;
+                TwoPointCCheckBox.Checked = false;
+            }
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void OnePointCCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SingAlgorithmRadioButton.Checked && OnePointCCheckBox.Checked)
+            {
+                InversionCCheckBox.Checked = false;
+                CyclicalCCheckBox.Checked = false;
+                TwoPointCCheckBox.Checked = false;
+            }
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void TwoPointCCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SingAlgorithmRadioButton.Checked && TwoPointCCheckBox.Checked)
+            {
+                InversionCCheckBox.Checked = false;
+                OnePointCCheckBox.Checked = false;
+                CyclicalCCheckBox.Checked = false;
+            }
+            ApplyAlgorithmButton.Enabled = true;
+        }
+
+        private void ApplyAlgorithmButton_Click(object sender, EventArgs e)
+        {
+            List<int> aliasMutant = new List<int>();
+            if (FourPointMCheckBox.Checked)
+            {
+                aliasMutant.Add(1);
+            }
+            if (TwoPointMCheckBox.Checked)
+            {
+                aliasMutant.Add(2);
+            }
+            if (NotRandomMCheckBox.Checked)
+            {
+                aliasMutant.Add(3);
+            }
+
+            List<int> aliasSelection = new List<int>();
+            if (TournamentSCheckBox.Checked)
+            {
+                aliasSelection.Add(1);
+            }
+            if (RankingSCheckBox.Checked)
+            {
+                aliasSelection.Add(2);
+            }
+            if (RouletteSCheckBox.Checked)
+            {
+                aliasSelection.Add(3);
+            }
+
+            List<int> aliasCrossingover = new List<int>();
+            if (CyclicalCCheckBox.Checked)
+            {
+                aliasCrossingover.Add(1);
+            }
+            if (InversionCCheckBox.Checked)
+            {
+                aliasCrossingover.Add(2);
+            }
+            if (OnePointCCheckBox.Checked)
+            {
+                aliasCrossingover.Add(3);
+            }
+            if (TwoPointCCheckBox.Checked)
+            {
+                aliasCrossingover.Add(4);
+            }
+
+            int aliasFitnessFunction = 0;
+            double param = 0;
+            if (NumberOfGenerationsRadioButton.Checked)
+            {
+                aliasFitnessFunction = 1;
+                param = Convert.ToDouble(NumberOfGenerationsTextBox.Text);
+            }
+            if (BestRepsRadioButton.Checked)
+            {
+                aliasFitnessFunction = 2;
+                param = Convert.ToDouble(BestRepsTextBox.Text);
+            }
+            if (AchieveBetterRadioButton.Checked)
+            {
+                aliasFitnessFunction = 3;
+                param = Convert.ToDouble(AchieveBetterTextBox.Text);
+            }
+
+            if (SingAlgorithmRadioButton.Checked)
+            {
+                _mainController.CreateMutation(MainController.AlgorithmMode.Singl, aliasMutant.ToArray());
+                _mainController.CreateSelection(MainController.AlgorithmMode.Singl, aliasSelection.ToArray());
+                _mainController.CreateCrossingover(MainController.AlgorithmMode.Singl, aliasCrossingover.ToArray());
+                _mainController.CreateFitnessFunction(aliasFitnessFunction, param);
+            }
+            if (ComparisonAlgorithmRadioButton.Checked)
+            {
+                _mainController.CreateMutation(MainController.AlgorithmMode.Quality, aliasMutant.ToArray());
+                _mainController.CreateSelection(MainController.AlgorithmMode.Quality, aliasSelection.ToArray());
+                _mainController.CreateCrossingover(MainController.AlgorithmMode.Quality, aliasCrossingover.ToArray());
+                _mainController.CreateFitnessFunction(aliasFitnessFunction, param);
+            }
+            if (SearchBestAlgorithmRadioButton.Checked)
+            {
+                _mainController.CreateMutation(MainController.AlgorithmMode.Search, aliasMutant.ToArray());
+                _mainController.CreateSelection(MainController.AlgorithmMode.Search, aliasSelection.ToArray());
+                _mainController.CreateCrossingover(MainController.AlgorithmMode.Search, aliasCrossingover.ToArray());
+                _mainController.CreateFitnessFunction(aliasFitnessFunction, param);
+            }
+            int pSelection = Convert.ToInt16(ProbablyOfSelectionTextBox.Text);
+            int pMutation = Convert.ToInt16(ProbablyOfMutationTextBox.Text);
+            _mainController.SetProbabilitys(pSelection, pMutation);
+        }
+
+        private void RenderLaunchMode()
+        {
+            ConfigAlgDataGridView.Rows.Clear();
+            ConfigAlgDataGridView.Rows.Add(ConfigAlgDataGridView.Rows.Count, _mainController.GetConfigName(), _mainController.GetCountOfReplays());
+        }
+
+        private void StartButton_Click(object sender, EventArgs e)
+        {
+            WorkToolStripProgressBar.Value = 5;
+            _mainController.StartGA();
+        }
+
+        private void ConfigAlgDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex > -1)
+            {
+                _mainController.SetConfigName(ConfigAlgDataGridView[1, e.RowIndex].Value.ToString());
+                _mainController.SetCountOfReplays(Convert.ToInt16(ConfigAlgDataGridView[2, e.RowIndex].Value));
+            }
+        }
+
+        private void SaveConfigButton_Click(object sender, EventArgs e)
+        {
+            DirectoryInfo confDirectory = new DirectoryInfo(Directory.GetParent(Directory.GetCurrentDirectory()) + @"\Configuration");
+            if (!confDirectory.Exists)
+            {
+                confDirectory.Create();
+            }
+            SaveFileDialog.InitialDirectory = confDirectory.ToString();
+            SaveFileDialog.DefaultExt = "txt";
+            SaveFileDialog.Filter = "Text (*.txt)|*.txt|All files (*.*)|*.*";
+            if (SaveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _mainController.SaveConfiguration(SaveFileDialog.FileName);
+            }
+        }
+
+        private void AddConfigButton_Click(object sender, EventArgs e)
+        {
+            DirectoryInfo confDirectory = new DirectoryInfo(Directory.GetParent(Directory.GetCurrentDirectory()) + @"\Configuration");
+            if (!confDirectory.Exists)
+            {
+                confDirectory.Create();
+            }
+            OpenFileDialog.InitialDirectory = confDirectory.ToString();
+            OpenFileDialog.DefaultExt = "txt";
+            OpenFileDialog.Filter = "Text (*.txt)|*.txt|All files (*.*)|*.*";
+            if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _mainController.LoadConfiguration(OpenFileDialog.FileName);
+            }
+            RenderDataGridGraph();
+//            RenderViewGraph();
+            RenderDataGridPersons();
+            RenderAlgorithm();
+            RenderLaunchMode();
+        }
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

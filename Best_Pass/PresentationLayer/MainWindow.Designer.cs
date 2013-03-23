@@ -96,11 +96,15 @@
             this.ComparisonAlgorithmRadioButton = new System.Windows.Forms.RadioButton();
             this.SearchBestAlgorithmRadioButton = new System.Windows.Forms.RadioButton();
             this.StartModTabPage = new System.Windows.Forms.TabPage();
+            this.SaveConfigButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.StartButton = new System.Windows.Forms.Button();
             this.DeletConfigButton = new System.Windows.Forms.Button();
             this.AddConfigButton = new System.Windows.Forms.Button();
             this.ConfigAlgDataGridView = new System.Windows.Forms.DataGridView();
+            this.Num = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.NameOfConfiguration = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CountOfReplays = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MainMenuStrip = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CreateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -112,6 +116,9 @@
             this.WorkToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.ScopeLabel = new System.Windows.Forms.Label();
+            this.ScopeStartTextBox = new System.Windows.Forms.TextBox();
+            this.ScopeEndTextBox = new System.Windows.Forms.TextBox();
             this.SettingsTabControl.SuspendLayout();
             this.GraphTabPage.SuspendLayout();
             this.ControlGraphGroupBox.SuspendLayout();
@@ -183,6 +190,9 @@
             // 
             // ControlGraphGroupBox
             // 
+            this.ControlGraphGroupBox.Controls.Add(this.ScopeEndTextBox);
+            this.ControlGraphGroupBox.Controls.Add(this.ScopeStartTextBox);
+            this.ControlGraphGroupBox.Controls.Add(this.ScopeLabel);
             this.ControlGraphGroupBox.Controls.Add(this.LoadGraphButton);
             this.ControlGraphGroupBox.Controls.Add(this.SaveGraphButton);
             this.ControlGraphGroupBox.Controls.Add(this.addPointButton);
@@ -217,9 +227,9 @@
             // 
             // addPointButton
             // 
-            this.addPointButton.Location = new System.Drawing.Point(282, 44);
+            this.addPointButton.Location = new System.Drawing.Point(290, 26);
             this.addPointButton.Name = "addPointButton";
-            this.addPointButton.Size = new System.Drawing.Size(90, 23);
+            this.addPointButton.Size = new System.Drawing.Size(85, 46);
             this.addPointButton.TabIndex = 2;
             this.addPointButton.Text = "Создать граф";
             this.addPointButton.UseVisualStyleBackColor = true;
@@ -227,19 +237,19 @@
             // 
             // AddPointsTextBox
             // 
-            this.AddPointsTextBox.Location = new System.Drawing.Point(21, 45);
+            this.AddPointsTextBox.Location = new System.Drawing.Point(189, 26);
             this.AddPointsTextBox.Name = "AddPointsTextBox";
-            this.AddPointsTextBox.Size = new System.Drawing.Size(255, 20);
+            this.AddPointsTextBox.Size = new System.Drawing.Size(95, 20);
             this.AddPointsTextBox.TabIndex = 1;
             // 
             // add_DellPointsLabel
             // 
             this.add_DellPointsLabel.AutoSize = true;
-            this.add_DellPointsLabel.Location = new System.Drawing.Point(18, 29);
+            this.add_DellPointsLabel.Location = new System.Drawing.Point(31, 29);
             this.add_DellPointsLabel.Name = "add_DellPointsLabel";
-            this.add_DellPointsLabel.Size = new System.Drawing.Size(194, 13);
+            this.add_DellPointsLabel.Size = new System.Drawing.Size(154, 13);
             this.add_DellPointsLabel.TabIndex = 0;
-            this.add_DellPointsLabel.Text = "Введите нужное количество вершин:";
+            this.add_DellPointsLabel.Text = "Введите количество вершин:";
             // 
             // TechnicalGraphGroupBox
             // 
@@ -471,6 +481,7 @@
             this.ApplyAlgorithmButton.TabIndex = 5;
             this.ApplyAlgorithmButton.Text = "Применить";
             this.ApplyAlgorithmButton.UseVisualStyleBackColor = true;
+            this.ApplyAlgorithmButton.Click += new System.EventHandler(this.ApplyAlgorithmButton_Click);
             // 
             // ProbablyModeGroupBox
             // 
@@ -539,7 +550,7 @@
             this.AlgorithmModeGroupBox.Size = new System.Drawing.Size(581, 216);
             this.AlgorithmModeGroupBox.TabIndex = 3;
             this.AlgorithmModeGroupBox.TabStop = false;
-            this.AlgorithmModeGroupBox.Text = "Настройка алгоритмов мутации, селекции и скрещивания";
+            this.AlgorithmModeGroupBox.Text = "Настройка алгоритмов мутации, селекции и кроссинговера";
             // 
             // TwoPointCCheckBox
             // 
@@ -550,6 +561,7 @@
             this.TwoPointCCheckBox.TabIndex = 12;
             this.TwoPointCCheckBox.Text = "Двухточечное";
             this.TwoPointCCheckBox.UseVisualStyleBackColor = true;
+            this.TwoPointCCheckBox.CheckedChanged += new System.EventHandler(this.TwoPointCCheckBox_CheckedChanged);
             // 
             // OnePointCCheckBox
             // 
@@ -560,6 +572,7 @@
             this.OnePointCCheckBox.TabIndex = 11;
             this.OnePointCCheckBox.Text = "Одноточечное";
             this.OnePointCCheckBox.UseVisualStyleBackColor = true;
+            this.OnePointCCheckBox.CheckedChanged += new System.EventHandler(this.OnePointCCheckBox_CheckedChanged);
             // 
             // InversionCCheckBox
             // 
@@ -570,6 +583,7 @@
             this.InversionCCheckBox.TabIndex = 10;
             this.InversionCCheckBox.Text = "Инверсионное";
             this.InversionCCheckBox.UseVisualStyleBackColor = true;
+            this.InversionCCheckBox.CheckedChanged += new System.EventHandler(this.InversionCCheckBox_CheckedChanged);
             // 
             // CyclicalCCheckBox
             // 
@@ -582,6 +596,7 @@
             this.CyclicalCCheckBox.TabIndex = 9;
             this.CyclicalCCheckBox.Text = "Циклическое";
             this.CyclicalCCheckBox.UseVisualStyleBackColor = true;
+            this.CyclicalCCheckBox.CheckedChanged += new System.EventHandler(this.CyclicalCCheckBox_CheckedChanged);
             // 
             // RouletteSCheckBox
             // 
@@ -592,6 +607,7 @@
             this.RouletteSCheckBox.TabIndex = 8;
             this.RouletteSCheckBox.Text = "Рулетка";
             this.RouletteSCheckBox.UseVisualStyleBackColor = true;
+            this.RouletteSCheckBox.CheckedChanged += new System.EventHandler(this.RouletteSCheckBox_CheckedChanged);
             // 
             // RankingSCheckBox
             // 
@@ -602,6 +618,7 @@
             this.RankingSCheckBox.TabIndex = 7;
             this.RankingSCheckBox.Text = "Ранжирование";
             this.RankingSCheckBox.UseVisualStyleBackColor = true;
+            this.RankingSCheckBox.CheckedChanged += new System.EventHandler(this.RankingSCheckBox_CheckedChanged);
             // 
             // TournamentSCheckBox
             // 
@@ -614,6 +631,7 @@
             this.TournamentSCheckBox.TabIndex = 6;
             this.TournamentSCheckBox.Text = "Турнирная";
             this.TournamentSCheckBox.UseVisualStyleBackColor = true;
+            this.TournamentSCheckBox.CheckedChanged += new System.EventHandler(this.TournamentSCheckBox_CheckedChanged);
             // 
             // NotRandomMCheckBox
             // 
@@ -626,6 +644,7 @@
             this.NotRandomMCheckBox.TabIndex = 5;
             this.NotRandomMCheckBox.Text = "Худшего ребра";
             this.NotRandomMCheckBox.UseVisualStyleBackColor = true;
+            this.NotRandomMCheckBox.CheckedChanged += new System.EventHandler(this.NotRandomMCheckBox_CheckedChanged);
             // 
             // TwoPointMCheckBox
             // 
@@ -636,6 +655,7 @@
             this.TwoPointMCheckBox.TabIndex = 4;
             this.TwoPointMCheckBox.Text = "Двухточечная";
             this.TwoPointMCheckBox.UseVisualStyleBackColor = true;
+            this.TwoPointMCheckBox.CheckedChanged += new System.EventHandler(this.TwoPointMCheckBox_CheckedChanged);
             // 
             // FourPointMCheckBox
             // 
@@ -646,15 +666,16 @@
             this.FourPointMCheckBox.TabIndex = 3;
             this.FourPointMCheckBox.Text = "Четырехточечная";
             this.FourPointMCheckBox.UseVisualStyleBackColor = true;
+            this.FourPointMCheckBox.CheckedChanged += new System.EventHandler(this.FourPointMCheckBox_CheckedChanged);
             // 
             // CrossingoverAlgorithmLabel
             // 
             this.CrossingoverAlgorithmLabel.AutoSize = true;
             this.CrossingoverAlgorithmLabel.Location = new System.Drawing.Point(416, 30);
             this.CrossingoverAlgorithmLabel.Name = "CrossingoverAlgorithmLabel";
-            this.CrossingoverAlgorithmLabel.Size = new System.Drawing.Size(80, 13);
+            this.CrossingoverAlgorithmLabel.Size = new System.Drawing.Size(85, 13);
             this.CrossingoverAlgorithmLabel.TabIndex = 2;
-            this.CrossingoverAlgorithmLabel.Text = "Скрещивание:";
+            this.CrossingoverAlgorithmLabel.Text = " Кроссинговер:";
             // 
             // SelectionAlgorithmLabel
             // 
@@ -704,17 +725,21 @@
             this.AchieveBetterTextBox.Name = "AchieveBetterTextBox";
             this.AchieveBetterTextBox.Size = new System.Drawing.Size(113, 20);
             this.AchieveBetterTextBox.TabIndex = 4;
+            this.AchieveBetterTextBox.Text = "10";
             // 
             // BestRepsTextBox
             // 
+            this.BestRepsTextBox.Enabled = false;
             this.BestRepsTextBox.Location = new System.Drawing.Point(198, 90);
             this.BestRepsTextBox.Name = "BestRepsTextBox";
             this.BestRepsTextBox.Size = new System.Drawing.Size(80, 20);
             this.BestRepsTextBox.TabIndex = 3;
+            this.BestRepsTextBox.Text = "10";
             // 
             // BestRepsLabel
             // 
             this.BestRepsLabel.AutoSize = true;
+            this.BestRepsLabel.Enabled = false;
             this.BestRepsLabel.Location = new System.Drawing.Point(17, 93);
             this.BestRepsLabel.Name = "BestRepsLabel";
             this.BestRepsLabel.Size = new System.Drawing.Size(175, 13);
@@ -723,14 +748,17 @@
             // 
             // NumberOfGenerationsTextBox
             // 
+            this.NumberOfGenerationsTextBox.Enabled = false;
             this.NumberOfGenerationsTextBox.Location = new System.Drawing.Point(187, 41);
             this.NumberOfGenerationsTextBox.Name = "NumberOfGenerationsTextBox";
             this.NumberOfGenerationsTextBox.Size = new System.Drawing.Size(91, 20);
             this.NumberOfGenerationsTextBox.TabIndex = 1;
+            this.NumberOfGenerationsTextBox.Text = "10";
             // 
             // NumberOfGenerationsLabel
             // 
             this.NumberOfGenerationsLabel.AutoSize = true;
+            this.NumberOfGenerationsLabel.Enabled = false;
             this.NumberOfGenerationsLabel.Location = new System.Drawing.Point(17, 44);
             this.NumberOfGenerationsLabel.Name = "NumberOfGenerationsLabel";
             this.NumberOfGenerationsLabel.Size = new System.Drawing.Size(164, 13);
@@ -760,6 +788,7 @@
             this.AchieveBetterRadioButton.TabStop = true;
             this.AchieveBetterRadioButton.Text = "Достижение заданного результата";
             this.AchieveBetterRadioButton.UseVisualStyleBackColor = true;
+            this.AchieveBetterRadioButton.CheckedChanged += new System.EventHandler(this.AchieveBetterRadioButton_CheckedChanged);
             // 
             // BestRepsRadioButton
             // 
@@ -771,6 +800,7 @@
             this.BestRepsRadioButton.TabStop = true;
             this.BestRepsRadioButton.Text = "Повторение лучшего результата";
             this.BestRepsRadioButton.UseVisualStyleBackColor = true;
+            this.BestRepsRadioButton.CheckedChanged += new System.EventHandler(this.BestRepsRadioButton_CheckedChanged);
             // 
             // NumberOfGenerationsRadioButton
             // 
@@ -782,6 +812,7 @@
             this.NumberOfGenerationsRadioButton.TabStop = true;
             this.NumberOfGenerationsRadioButton.Text = "Количество пройденных покалений";
             this.NumberOfGenerationsRadioButton.UseVisualStyleBackColor = true;
+            this.NumberOfGenerationsRadioButton.CheckedChanged += new System.EventHandler(this.NumberOfGenerationsRadioButton_CheckedChanged);
             // 
             // WorckModeGroupBox
             // 
@@ -806,6 +837,7 @@
             this.SingAlgorithmRadioButton.TabStop = true;
             this.SingAlgorithmRadioButton.Text = "Запуска одного алгоритма";
             this.SingAlgorithmRadioButton.UseVisualStyleBackColor = true;
+            this.SingAlgorithmRadioButton.CheckedChanged += new System.EventHandler(this.SingAlgorithmRadioButton_CheckedChanged);
             // 
             // ComparisonAlgorithmRadioButton
             // 
@@ -817,6 +849,7 @@
             this.ComparisonAlgorithmRadioButton.TabStop = true;
             this.ComparisonAlgorithmRadioButton.Text = "Сравнение алгоритмов";
             this.ComparisonAlgorithmRadioButton.UseVisualStyleBackColor = true;
+            this.ComparisonAlgorithmRadioButton.CheckedChanged += new System.EventHandler(this.ComparisonAlgorithmRadioButton_CheckedChanged);
             // 
             // SearchBestAlgorithmRadioButton
             // 
@@ -828,9 +861,11 @@
             this.SearchBestAlgorithmRadioButton.TabStop = true;
             this.SearchBestAlgorithmRadioButton.Text = "Поиска лучшего алгоритма";
             this.SearchBestAlgorithmRadioButton.UseVisualStyleBackColor = true;
+            this.SearchBestAlgorithmRadioButton.CheckedChanged += new System.EventHandler(this.SearchBestAlgorithmRadioButton_CheckedChanged);
             // 
             // StartModTabPage
             // 
+            this.StartModTabPage.Controls.Add(this.SaveConfigButton);
             this.StartModTabPage.Controls.Add(this.StopButton);
             this.StartModTabPage.Controls.Add(this.StartButton);
             this.StartModTabPage.Controls.Add(this.DeletConfigButton);
@@ -844,29 +879,41 @@
             this.StartModTabPage.Text = "Настройка запуска";
             this.StartModTabPage.UseVisualStyleBackColor = true;
             // 
+            // SaveConfigButton
+            // 
+            this.SaveConfigButton.Location = new System.Drawing.Point(551, 20);
+            this.SaveConfigButton.Name = "SaveConfigButton";
+            this.SaveConfigButton.Size = new System.Drawing.Size(155, 23);
+            this.SaveConfigButton.TabIndex = 5;
+            this.SaveConfigButton.Text = "Сохранить конфигурацию";
+            this.SaveConfigButton.UseVisualStyleBackColor = true;
+            this.SaveConfigButton.Click += new System.EventHandler(this.SaveConfigButton_Click);
+            // 
             // StopButton
             // 
             this.StopButton.Location = new System.Drawing.Point(551, 215);
             this.StopButton.Name = "StopButton";
-            this.StopButton.Size = new System.Drawing.Size(144, 23);
+            this.StopButton.Size = new System.Drawing.Size(155, 23);
             this.StopButton.TabIndex = 4;
             this.StopButton.Text = "Стоп";
             this.StopButton.UseVisualStyleBackColor = true;
+            this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
             // StartButton
             // 
             this.StartButton.Location = new System.Drawing.Point(551, 186);
             this.StartButton.Name = "StartButton";
-            this.StartButton.Size = new System.Drawing.Size(144, 23);
+            this.StartButton.Size = new System.Drawing.Size(155, 23);
             this.StartButton.TabIndex = 3;
             this.StartButton.Text = "Старт";
             this.StartButton.UseVisualStyleBackColor = true;
+            this.StartButton.Click += new System.EventHandler(this.StartButton_Click);
             // 
             // DeletConfigButton
             // 
-            this.DeletConfigButton.Location = new System.Drawing.Point(551, 78);
+            this.DeletConfigButton.Location = new System.Drawing.Point(550, 78);
             this.DeletConfigButton.Name = "DeletConfigButton";
-            this.DeletConfigButton.Size = new System.Drawing.Size(144, 23);
+            this.DeletConfigButton.Size = new System.Drawing.Size(156, 23);
             this.DeletConfigButton.TabIndex = 2;
             this.DeletConfigButton.Text = "Удалить конфигурацию";
             this.DeletConfigButton.UseVisualStyleBackColor = true;
@@ -875,18 +922,44 @@
             // 
             this.AddConfigButton.Location = new System.Drawing.Point(550, 49);
             this.AddConfigButton.Name = "AddConfigButton";
-            this.AddConfigButton.Size = new System.Drawing.Size(145, 23);
+            this.AddConfigButton.Size = new System.Drawing.Size(156, 23);
             this.AddConfigButton.TabIndex = 1;
             this.AddConfigButton.Text = "Загрузить конфигурацию";
             this.AddConfigButton.UseVisualStyleBackColor = true;
+            this.AddConfigButton.Click += new System.EventHandler(this.AddConfigButton_Click);
             // 
             // ConfigAlgDataGridView
             // 
+            this.ConfigAlgDataGridView.AllowUserToAddRows = false;
+            this.ConfigAlgDataGridView.AllowUserToDeleteRows = false;
             this.ConfigAlgDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ConfigAlgDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Num,
+            this.NameOfConfiguration,
+            this.CountOfReplays});
             this.ConfigAlgDataGridView.Location = new System.Drawing.Point(6, 6);
             this.ConfigAlgDataGridView.Name = "ConfigAlgDataGridView";
-            this.ConfigAlgDataGridView.Size = new System.Drawing.Size(538, 419);
+            this.ConfigAlgDataGridView.RowHeadersVisible = false;
+            this.ConfigAlgDataGridView.Size = new System.Drawing.Size(506, 419);
             this.ConfigAlgDataGridView.TabIndex = 0;
+            this.ConfigAlgDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ConfigAlgDataGridView_CellValueChanged);
+            // 
+            // Num
+            // 
+            this.Num.HeaderText = "№";
+            this.Num.Name = "Num";
+            this.Num.ReadOnly = true;
+            // 
+            // NameOfConfiguration
+            // 
+            this.NameOfConfiguration.HeaderText = "Название конфигурации";
+            this.NameOfConfiguration.Name = "NameOfConfiguration";
+            this.NameOfConfiguration.Width = 300;
+            // 
+            // CountOfReplays
+            // 
+            this.CountOfReplays.HeaderText = "Количество повторений";
+            this.CountOfReplays.Name = "CountOfReplays";
             // 
             // MainMenuStrip
             // 
@@ -965,6 +1038,29 @@
             // SaveFileDialog
             // 
             this.SaveFileDialog.DefaultExt = "xml";
+            // 
+            // ScopeLabel
+            // 
+            this.ScopeLabel.AutoSize = true;
+            this.ScopeLabel.Location = new System.Drawing.Point(31, 54);
+            this.ScopeLabel.Name = "ScopeLabel";
+            this.ScopeLabel.Size = new System.Drawing.Size(94, 13);
+            this.ScopeLabel.TabIndex = 7;
+            this.ScopeLabel.Text = "Диапазон весов:";
+            // 
+            // ScopeStartTextBox
+            // 
+            this.ScopeStartTextBox.Location = new System.Drawing.Point(131, 52);
+            this.ScopeStartTextBox.Name = "ScopeStartTextBox";
+            this.ScopeStartTextBox.Size = new System.Drawing.Size(72, 20);
+            this.ScopeStartTextBox.TabIndex = 8;
+            // 
+            // ScopeEndTextBox
+            // 
+            this.ScopeEndTextBox.Location = new System.Drawing.Point(209, 52);
+            this.ScopeEndTextBox.Name = "ScopeEndTextBox";
+            this.ScopeEndTextBox.Size = new System.Drawing.Size(75, 20);
+            this.ScopeEndTextBox.TabIndex = 9;
             // 
             // MainWindow
             // 
@@ -1100,6 +1196,13 @@
         private System.Windows.Forms.Button DeletePersonsButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn Number;
         private System.Windows.Forms.DataGridViewTextBoxColumn Track;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Num;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NameOfConfiguration;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CountOfReplays;
+        private System.Windows.Forms.Button SaveConfigButton;
+        private System.Windows.Forms.TextBox ScopeEndTextBox;
+        private System.Windows.Forms.TextBox ScopeStartTextBox;
+        private System.Windows.Forms.Label ScopeLabel;
     }
 }
 
