@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Best_Pass.BusinessLayer;
+using Best_Pass.PresentationLayer.Exceptions.Algorithm;
+using Best_Pass.PresentationLayer.Exceptions.Graph;
+using Best_Pass.PresentationLayer.Exceptions.Persons;
 using GeneticEngine.Graph;
 using GeneticEngine.Track;
 using Microsoft.Glee;
@@ -40,10 +43,39 @@ namespace Best_Pass.PresentationLayer
 
         private void addPointButton_Click(object sender, EventArgs e)
         {
-            CreateGraph();
-            RenderDataGridGraph();
-            RenderViewGraph();
-            RenderDataGridPersons();
+            int countOfNode = 0;
+            int scopeStart = 0;
+            int scopeEnd = 0;
+            try
+            {
+                countOfNode = Convert.ToInt16(AddPointsTextBox.Text.Trim());
+                scopeStart = Convert.ToInt32(ScopeStartTextBox.Text.Trim());
+                scopeEnd = Convert.ToInt32(ScopeEndTextBox.Text.Trim());
+                if (1 > scopeStart || 2000000 < scopeEnd || scopeStart > scopeEnd)
+                {
+                    throw new ConstraintLengthOfRibException();
+                }
+                if (3 > countOfNode || 250 < countOfNode)
+                {
+                    throw new LimitingNumberOfNodeExceptions();
+                }
+                CreateGraph();
+                RenderDataGridGraph();
+                //            RenderViewGraph();
+                RenderDataGridPersons();
+            }
+            catch (LimitingNumberOfNodeExceptions ex)
+            {
+                var result = MessageBox.Show(ex.Message, ex.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Question);
+            }
+            catch (ConstraintLengthOfRibException ex)
+            {
+                var result = MessageBox.Show(ex.Message, ex.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Question);
+            }
+            catch
+            {
+                var result = MessageBox.Show(@"Вы что-то ввели не правильно!", @"Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Question);
+            }
         }
 
         private void RenderDataGridGraph()
@@ -214,6 +246,7 @@ namespace Best_Pass.PresentationLayer
             }
             RenderDataGridGraph();
 //            RenderViewGraph();
+            RenderDataGridPersons();
         }
 
         private void AddPersonsButton_Click(object sender, EventArgs e)
@@ -242,20 +275,65 @@ namespace Best_Pass.PresentationLayer
             {
                 List<int[]> persons = new List<int[]>();
                 char[] separator = {' '};
-                for (int i = 0; i < PersonsDataGridView.Rows.Count; i++)
+                try
                 {
-                    if (PersonsDataGridView[1, i].Value.ToString() != "")
+                    for (int i = 0; i < PersonsDataGridView.Rows.Count; i++)
                     {
-                        string[] person = PersonsDataGridView[1, i].Value.ToString().Trim().Split(separator);
-                        int[] per = new int[person.Length];
-                        for (int j = 0; j < per.Length; j++)
+
+                        if (PersonsDataGridView[1, i].Value.ToString() != "")
                         {
-                            per[j] = Convert.ToInt16(person[j]);
+                            string[] person = PersonsDataGridView[1, i].Value.ToString().Trim().Split(separator);
+                            int[] per = new int[person.Length];
+                            if (per.Length != _mainController.GetGraph().CountOfNode)
+                            {
+                                throw new LimitingNumberOfCitiesException();
+                            }
+                            for (int j = 0; j < per.Length; j++)
+                            {
+                                per[j] = -1;
+                            }
+                            for (int j = 0; j < per.Length; j++)
+                            {
+                                if (0 > Convert.ToInt16(person[j]) || _mainController.GetGraph().CountOfNode < Convert.ToInt16(person[j]) || per.Contains(Convert.ToInt16(person[j])))
+                                {
+                                    throw new RestrictionNameOfCityException();
+                                }
+                                per[j] = Convert.ToInt16(person[j]);
+                            }
+                            persons.Add(per);
                         }
-                        persons.Add(per);
                     }
+                    _mainController.CreatePersons(persons);
                 }
-                _mainController.CreatePersons(persons);
+                catch (LimitingNumberOfCitiesException ex)
+                {
+                    var result =
+                        MessageBox.Show(
+                            @"Количесто городов должно быть равным " + _mainController.GetGraph().CountOfNode + "!",
+                            ex.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Question);
+                    PersonsDataGridView[e.ColumnIndex, e.RowIndex].Value =
+                        PersonsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText;
+                }
+                catch (RestrictionNameOfCityException ex)
+                {
+                    var result =
+                        MessageBox.Show(
+                            @"Номер города должен быть в пределах от 0 до " + (_mainController.GetGraph().CountOfNode - 1) + @", и не должет повторяться!",
+                            ex.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Question);
+                    PersonsDataGridView[e.ColumnIndex, e.RowIndex].Value =
+                        PersonsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText;
+                }
+                catch
+                {
+                    var result = MessageBox.Show(@"Вы что-то ввели не правильно!", @"Ошибка", MessageBoxButtons.OK,
+                                                 MessageBoxIcon.Question);
+                    PersonsDataGridView[e.ColumnIndex, e.RowIndex].Value =
+                        PersonsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText;
+                }
+                finally
+                {
+                    PersonsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText = String.Empty;
+                }
             }
         }
 
@@ -381,7 +459,7 @@ namespace Best_Pass.PresentationLayer
                 TwoPointMCheckBox.Checked = true;
             }
             ProbablyOfMutationTextBox.Text = _mainController.GetPMutation().ToString();
-            ProbablyOfSelectionTextBox.Text = _mainController.GetPSelection().ToString();
+            ProbablyOfCrossingoverTextBox.Text = _mainController.GetPCrossingover().ToString();
         }
 
         private void NumberOfGenerationsRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -422,8 +500,8 @@ namespace Best_Pass.PresentationLayer
         {
             ProbablyOfMutationTextBox.Text = "100";
             ProbablyOfMutationTextBox.Enabled = false;
-            ProbablyOfSelectionTextBox.Text = "100";
-            ProbablyOfSelectionTextBox.Enabled = false;
+            ProbablyOfCrossingoverTextBox.Text = "100";
+            ProbablyOfCrossingoverTextBox.Enabled = false;
 
             ApplyAlgorithmButton.Enabled = true;
         }
@@ -432,8 +510,8 @@ namespace Best_Pass.PresentationLayer
         {
             ProbablyOfMutationTextBox.Text = "100";
             ProbablyOfMutationTextBox.Enabled = false;
-            ProbablyOfSelectionTextBox.Text = "100";
-            ProbablyOfSelectionTextBox.Enabled = false;
+            ProbablyOfCrossingoverTextBox.Text = "100";
+            ProbablyOfCrossingoverTextBox.Enabled = false;
 
             ApplyAlgorithmButton.Enabled = true;
         }
@@ -441,7 +519,7 @@ namespace Best_Pass.PresentationLayer
         private void SingAlgorithmRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             ProbablyOfMutationTextBox.Enabled = true;
-            ProbablyOfSelectionTextBox.Enabled = true;
+            ProbablyOfCrossingoverTextBox.Enabled = true;
             if (SingAlgorithmRadioButton.Checked)
             {
                 FourPointMCheckBox.Checked = false;
@@ -567,6 +645,31 @@ namespace Best_Pass.PresentationLayer
 
         private void ApplyAlgorithmButton_Click(object sender, EventArgs e)
         {
+            try
+            {
+                int pCrossingover = Convert.ToInt16(ProbablyOfCrossingoverTextBox.Text);
+                int pMutation = Convert.ToInt16(ProbablyOfMutationTextBox.Text);
+                if (0 > pMutation || 100 < pMutation || 0 > pCrossingover || 100 < pCrossingover)
+                {
+                    throw new RestrictionOfProbabilityException();
+                }
+                _mainController.SetProbabilitys(pCrossingover, pMutation);
+            }
+            catch (RestrictionOfProbabilityException ex)
+            {
+                var result = MessageBox.Show(ex.Message, ex.ToString(), MessageBoxButtons.OK,
+                             MessageBoxIcon.Question);
+                ProbablyOfCrossingoverTextBox.Text = "100";
+                ProbablyOfMutationTextBox.Text = "100";
+            }
+            catch
+            {
+                var result = MessageBox.Show(@"Вы что-то ввели не правильно!", @"Ошибка", MessageBoxButtons.OK,
+                             MessageBoxIcon.Question);
+                ProbablyOfCrossingoverTextBox.Text = "100";
+                ProbablyOfMutationTextBox.Text = "100";
+            }
+
             List<int> aliasMutant = new List<int>();
             if (FourPointMCheckBox.Checked)
             {
@@ -615,22 +718,44 @@ namespace Best_Pass.PresentationLayer
 
             int aliasFitnessFunction = 0;
             double param = 0;
-            if (NumberOfGenerationsRadioButton.Checked)
+            try
             {
-                aliasFitnessFunction = 1;
-                param = Convert.ToDouble(NumberOfGenerationsTextBox.Text);
+                if (NumberOfGenerationsRadioButton.Checked)
+                {
+                    aliasFitnessFunction = 1;
+                    param = Convert.ToDouble(NumberOfGenerationsTextBox.Text);
+                }
+                if (BestRepsRadioButton.Checked)
+                {
+                    aliasFitnessFunction = 2;
+                    param = Convert.ToDouble(BestRepsTextBox.Text);
+                }
+                if (AchieveBetterRadioButton.Checked)
+                {
+                    aliasFitnessFunction = 3;
+                    param = Convert.ToDouble(AchieveBetterTextBox.Text);
+                }
+                if (param.CompareTo(0) == -1 || param.CompareTo(2000000) == 1)
+                {
+                    throw new ConstraintFitnessFunctionParameterException();
+                }
             }
-            if (BestRepsRadioButton.Checked)
+            catch (ConstraintFitnessFunctionParameterException ex)
             {
-                aliasFitnessFunction = 2;
-                param = Convert.ToDouble(BestRepsTextBox.Text);
+                var result = MessageBox.Show(ex.Message, ex.ToString(), MessageBoxButtons.OK,
+                         MessageBoxIcon.Question);
+                NumberOfGenerationsTextBox.Text = "10";
+                BestRepsTextBox.Text = "10";
+                AchieveBetterTextBox.Text = "10";
             }
-            if (AchieveBetterRadioButton.Checked)
+            catch
             {
-                aliasFitnessFunction = 3;
-                param = Convert.ToDouble(AchieveBetterTextBox.Text);
+                var result = MessageBox.Show(@"Вы что-то ввели не правильно!", @"Ошибка", MessageBoxButtons.OK,
+                         MessageBoxIcon.Question);
+                NumberOfGenerationsTextBox.Text = "10";
+                BestRepsTextBox.Text = "10";
+                AchieveBetterTextBox.Text = "10";
             }
-
             if (SingAlgorithmRadioButton.Checked)
             {
                 _mainController.CreateMutation(MainController.AlgorithmMode.Singl, aliasMutant.ToArray());
@@ -652,9 +777,6 @@ namespace Best_Pass.PresentationLayer
                 _mainController.CreateCrossingover(MainController.AlgorithmMode.Search, aliasCrossingover.ToArray());
                 _mainController.CreateFitnessFunction(aliasFitnessFunction, param);
             }
-            int pSelection = Convert.ToInt16(ProbablyOfSelectionTextBox.Text);
-            int pMutation = Convert.ToInt16(ProbablyOfMutationTextBox.Text);
-            _mainController.SetProbabilitys(pSelection, pMutation);
         }
 
         private void RenderLaunchMode()
@@ -718,6 +840,12 @@ namespace Best_Pass.PresentationLayer
         private void StopButton_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void PersonsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            PersonsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText =
+                PersonsDataGridView[e.ColumnIndex, e.RowIndex].Value.ToString();
         }
     }
 }

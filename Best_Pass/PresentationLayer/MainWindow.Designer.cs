@@ -33,6 +33,9 @@
             this.SettingsTabControl = new System.Windows.Forms.TabControl();
             this.GraphTabPage = new System.Windows.Forms.TabPage();
             this.ControlGraphGroupBox = new System.Windows.Forms.GroupBox();
+            this.ScopeEndTextBox = new System.Windows.Forms.TextBox();
+            this.ScopeStartTextBox = new System.Windows.Forms.TextBox();
+            this.ScopeLabel = new System.Windows.Forms.Label();
             this.LoadGraphButton = new System.Windows.Forms.Button();
             this.SaveGraphButton = new System.Windows.Forms.Button();
             this.addPointButton = new System.Windows.Forms.Button();
@@ -63,9 +66,9 @@
             this.ApplyAlgorithmButton = new System.Windows.Forms.Button();
             this.ProbablyModeGroupBox = new System.Windows.Forms.GroupBox();
             this.ProbablyOfMutationTextBox = new System.Windows.Forms.TextBox();
-            this.ProbablyOfSelectionTextBox = new System.Windows.Forms.TextBox();
+            this.ProbablyOfCrossingoverTextBox = new System.Windows.Forms.TextBox();
             this.ProbablyOfMutationLabel = new System.Windows.Forms.Label();
-            this.ProbablyOfSelectionLabel = new System.Windows.Forms.Label();
+            this.ProbablyOfCrossingoverLabel = new System.Windows.Forms.Label();
             this.AlgorithmModeGroupBox = new System.Windows.Forms.GroupBox();
             this.TwoPointCCheckBox = new System.Windows.Forms.CheckBox();
             this.OnePointCCheckBox = new System.Windows.Forms.CheckBox();
@@ -116,9 +119,6 @@
             this.WorkToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.ScopeLabel = new System.Windows.Forms.Label();
-            this.ScopeStartTextBox = new System.Windows.Forms.TextBox();
-            this.ScopeEndTextBox = new System.Windows.Forms.TextBox();
             this.SettingsTabControl.SuspendLayout();
             this.GraphTabPage.SuspendLayout();
             this.ControlGraphGroupBox.SuspendLayout();
@@ -172,7 +172,7 @@
             this.SettingsTabControl.Location = new System.Drawing.Point(12, 28);
             this.SettingsTabControl.Name = "SettingsTabControl";
             this.SettingsTabControl.SelectedIndex = 0;
-            this.SettingsTabControl.Size = new System.Drawing.Size(891, 457);
+            this.SettingsTabControl.Size = new System.Drawing.Size(912, 457);
             this.SettingsTabControl.TabIndex = 0;
             // 
             // GraphTabPage
@@ -183,7 +183,7 @@
             this.GraphTabPage.Location = new System.Drawing.Point(4, 22);
             this.GraphTabPage.Name = "GraphTabPage";
             this.GraphTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.GraphTabPage.Size = new System.Drawing.Size(883, 431);
+            this.GraphTabPage.Size = new System.Drawing.Size(904, 431);
             this.GraphTabPage.TabIndex = 0;
             this.GraphTabPage.Text = "Редактор графа";
             this.GraphTabPage.UseVisualStyleBackColor = true;
@@ -204,6 +204,29 @@
             this.ControlGraphGroupBox.TabIndex = 2;
             this.ControlGraphGroupBox.TabStop = false;
             this.ControlGraphGroupBox.Text = "Панель управления";
+            // 
+            // ScopeEndTextBox
+            // 
+            this.ScopeEndTextBox.Location = new System.Drawing.Point(209, 52);
+            this.ScopeEndTextBox.Name = "ScopeEndTextBox";
+            this.ScopeEndTextBox.Size = new System.Drawing.Size(75, 20);
+            this.ScopeEndTextBox.TabIndex = 9;
+            // 
+            // ScopeStartTextBox
+            // 
+            this.ScopeStartTextBox.Location = new System.Drawing.Point(131, 52);
+            this.ScopeStartTextBox.Name = "ScopeStartTextBox";
+            this.ScopeStartTextBox.Size = new System.Drawing.Size(72, 20);
+            this.ScopeStartTextBox.TabIndex = 8;
+            // 
+            // ScopeLabel
+            // 
+            this.ScopeLabel.AutoSize = true;
+            this.ScopeLabel.Location = new System.Drawing.Point(31, 54);
+            this.ScopeLabel.Name = "ScopeLabel";
+            this.ScopeLabel.Size = new System.Drawing.Size(94, 13);
+            this.ScopeLabel.TabIndex = 7;
+            this.ScopeLabel.Text = "Диапазон весов:";
             // 
             // LoadGraphButton
             // 
@@ -256,7 +279,7 @@
             this.TechnicalGraphGroupBox.Controls.Add(this.RibsDataGridView);
             this.TechnicalGraphGroupBox.Location = new System.Drawing.Point(651, 6);
             this.TechnicalGraphGroupBox.Name = "TechnicalGraphGroupBox";
-            this.TechnicalGraphGroupBox.Size = new System.Drawing.Size(226, 419);
+            this.TechnicalGraphGroupBox.Size = new System.Drawing.Size(247, 419);
             this.TechnicalGraphGroupBox.TabIndex = 1;
             this.TechnicalGraphGroupBox.TabStop = false;
             this.TechnicalGraphGroupBox.Text = "Табличное представление";
@@ -273,7 +296,7 @@
             this.RibsDataGridView.Location = new System.Drawing.Point(6, 19);
             this.RibsDataGridView.Name = "RibsDataGridView";
             this.RibsDataGridView.RowHeadersVisible = false;
-            this.RibsDataGridView.Size = new System.Drawing.Size(214, 394);
+            this.RibsDataGridView.Size = new System.Drawing.Size(230, 394);
             this.RibsDataGridView.TabIndex = 0;
             this.RibsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.RibsDataGridView_CellValueChanged);
             // 
@@ -322,7 +345,7 @@
             this.PersonSettingsTabPage.Location = new System.Drawing.Point(4, 22);
             this.PersonSettingsTabPage.Name = "PersonSettingsTabPage";
             this.PersonSettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PersonSettingsTabPage.Size = new System.Drawing.Size(883, 431);
+            this.PersonSettingsTabPage.Size = new System.Drawing.Size(904, 431);
             this.PersonSettingsTabPage.TabIndex = 3;
             this.PersonSettingsTabPage.Text = "Редактор особей";
             this.PersonSettingsTabPage.UseVisualStyleBackColor = true;
@@ -405,6 +428,7 @@
             this.PersonsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.PersonsDataGridView.Size = new System.Drawing.Size(426, 345);
             this.PersonsDataGridView.TabIndex = 1;
+            this.PersonsDataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.PersonsDataGridView_CellBeginEdit);
             this.PersonsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.PersonsDataGridView_CellValueChanged);
             // 
             // Number
@@ -450,7 +474,7 @@
             this.AlgorithmTabPage.Location = new System.Drawing.Point(4, 22);
             this.AlgorithmTabPage.Name = "AlgorithmTabPage";
             this.AlgorithmTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.AlgorithmTabPage.Size = new System.Drawing.Size(883, 431);
+            this.AlgorithmTabPage.Size = new System.Drawing.Size(904, 431);
             this.AlgorithmTabPage.TabIndex = 1;
             this.AlgorithmTabPage.Text = "Настройка алгоритмов";
             this.AlgorithmTabPage.UseVisualStyleBackColor = true;
@@ -486,9 +510,9 @@
             // ProbablyModeGroupBox
             // 
             this.ProbablyModeGroupBox.Controls.Add(this.ProbablyOfMutationTextBox);
-            this.ProbablyModeGroupBox.Controls.Add(this.ProbablyOfSelectionTextBox);
+            this.ProbablyModeGroupBox.Controls.Add(this.ProbablyOfCrossingoverTextBox);
             this.ProbablyModeGroupBox.Controls.Add(this.ProbablyOfMutationLabel);
-            this.ProbablyModeGroupBox.Controls.Add(this.ProbablyOfSelectionLabel);
+            this.ProbablyModeGroupBox.Controls.Add(this.ProbablyOfCrossingoverLabel);
             this.ProbablyModeGroupBox.Location = new System.Drawing.Point(593, 209);
             this.ProbablyModeGroupBox.Name = "ProbablyModeGroupBox";
             this.ProbablyModeGroupBox.Size = new System.Drawing.Size(284, 151);
@@ -504,13 +528,13 @@
             this.ProbablyOfMutationTextBox.TabIndex = 3;
             this.ProbablyOfMutationTextBox.Text = "100";
             // 
-            // ProbablyOfSelectionTextBox
+            // ProbablyOfCrossingoverTextBox
             // 
-            this.ProbablyOfSelectionTextBox.Location = new System.Drawing.Point(47, 55);
-            this.ProbablyOfSelectionTextBox.Name = "ProbablyOfSelectionTextBox";
-            this.ProbablyOfSelectionTextBox.Size = new System.Drawing.Size(100, 20);
-            this.ProbablyOfSelectionTextBox.TabIndex = 2;
-            this.ProbablyOfSelectionTextBox.Text = "100";
+            this.ProbablyOfCrossingoverTextBox.Location = new System.Drawing.Point(47, 55);
+            this.ProbablyOfCrossingoverTextBox.Name = "ProbablyOfCrossingoverTextBox";
+            this.ProbablyOfCrossingoverTextBox.Size = new System.Drawing.Size(100, 20);
+            this.ProbablyOfCrossingoverTextBox.TabIndex = 2;
+            this.ProbablyOfCrossingoverTextBox.Text = "100";
             // 
             // ProbablyOfMutationLabel
             // 
@@ -521,14 +545,14 @@
             this.ProbablyOfMutationLabel.TabIndex = 1;
             this.ProbablyOfMutationLabel.Text = "Вероятность мутации:";
             // 
-            // ProbablyOfSelectionLabel
+            // ProbablyOfCrossingoverLabel
             // 
-            this.ProbablyOfSelectionLabel.AutoSize = true;
-            this.ProbablyOfSelectionLabel.Location = new System.Drawing.Point(44, 30);
-            this.ProbablyOfSelectionLabel.Name = "ProbablyOfSelectionLabel";
-            this.ProbablyOfSelectionLabel.Size = new System.Drawing.Size(126, 13);
-            this.ProbablyOfSelectionLabel.TabIndex = 0;
-            this.ProbablyOfSelectionLabel.Text = "Вероятность селекции:";
+            this.ProbablyOfCrossingoverLabel.AutoSize = true;
+            this.ProbablyOfCrossingoverLabel.Location = new System.Drawing.Point(44, 30);
+            this.ProbablyOfCrossingoverLabel.Name = "ProbablyOfCrossingoverLabel";
+            this.ProbablyOfCrossingoverLabel.Size = new System.Drawing.Size(155, 13);
+            this.ProbablyOfCrossingoverLabel.TabIndex = 0;
+            this.ProbablyOfCrossingoverLabel.Text = "Вероятность кроссинговера:";
             // 
             // AlgorithmModeGroupBox
             // 
@@ -874,7 +898,7 @@
             this.StartModTabPage.Location = new System.Drawing.Point(4, 22);
             this.StartModTabPage.Name = "StartModTabPage";
             this.StartModTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.StartModTabPage.Size = new System.Drawing.Size(883, 431);
+            this.StartModTabPage.Size = new System.Drawing.Size(904, 431);
             this.StartModTabPage.TabIndex = 2;
             this.StartModTabPage.Text = "Настройка запуска";
             this.StartModTabPage.UseVisualStyleBackColor = true;
@@ -967,7 +991,7 @@
             this.файлToolStripMenuItem});
             this.MainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MainMenuStrip.Name = "MainMenuStrip";
-            this.MainMenuStrip.Size = new System.Drawing.Size(915, 25);
+            this.MainMenuStrip.Size = new System.Drawing.Size(936, 25);
             this.MainMenuStrip.TabIndex = 1;
             this.MainMenuStrip.Text = "menuStrip1";
             // 
@@ -1014,7 +1038,7 @@
             this.WorkToolStripStatusLabel});
             this.WorkStatusStrip.Location = new System.Drawing.Point(0, 499);
             this.WorkStatusStrip.Name = "WorkStatusStrip";
-            this.WorkStatusStrip.Size = new System.Drawing.Size(915, 22);
+            this.WorkStatusStrip.Size = new System.Drawing.Size(936, 22);
             this.WorkStatusStrip.TabIndex = 2;
             this.WorkStatusStrip.Text = "statusStrip1";
             // 
@@ -1039,34 +1063,11 @@
             // 
             this.SaveFileDialog.DefaultExt = "xml";
             // 
-            // ScopeLabel
-            // 
-            this.ScopeLabel.AutoSize = true;
-            this.ScopeLabel.Location = new System.Drawing.Point(31, 54);
-            this.ScopeLabel.Name = "ScopeLabel";
-            this.ScopeLabel.Size = new System.Drawing.Size(94, 13);
-            this.ScopeLabel.TabIndex = 7;
-            this.ScopeLabel.Text = "Диапазон весов:";
-            // 
-            // ScopeStartTextBox
-            // 
-            this.ScopeStartTextBox.Location = new System.Drawing.Point(131, 52);
-            this.ScopeStartTextBox.Name = "ScopeStartTextBox";
-            this.ScopeStartTextBox.Size = new System.Drawing.Size(72, 20);
-            this.ScopeStartTextBox.TabIndex = 8;
-            // 
-            // ScopeEndTextBox
-            // 
-            this.ScopeEndTextBox.Location = new System.Drawing.Point(209, 52);
-            this.ScopeEndTextBox.Name = "ScopeEndTextBox";
-            this.ScopeEndTextBox.Size = new System.Drawing.Size(75, 20);
-            this.ScopeEndTextBox.TabIndex = 9;
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(915, 521);
+            this.ClientSize = new System.Drawing.Size(936, 521);
             this.Controls.Add(this.SettingsTabControl);
             this.Controls.Add(this.WorkStatusStrip);
             this.Controls.Add(this.MainMenuStrip);
@@ -1146,9 +1147,9 @@
         private System.Windows.Forms.RadioButton ComparisonAlgorithmRadioButton;
         private System.Windows.Forms.RadioButton SearchBestAlgorithmRadioButton;
         private System.Windows.Forms.TextBox ProbablyOfMutationTextBox;
-        private System.Windows.Forms.TextBox ProbablyOfSelectionTextBox;
+        private System.Windows.Forms.TextBox ProbablyOfCrossingoverTextBox;
         private System.Windows.Forms.Label ProbablyOfMutationLabel;
-        private System.Windows.Forms.Label ProbablyOfSelectionLabel;
+        private System.Windows.Forms.Label ProbablyOfCrossingoverLabel;
         private System.Windows.Forms.CheckBox TwoPointCCheckBox;
         private System.Windows.Forms.CheckBox OnePointCCheckBox;
         private System.Windows.Forms.CheckBox InversionCCheckBox;
