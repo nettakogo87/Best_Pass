@@ -268,9 +268,9 @@ namespace Best_Pass.BusinessLayer
             }
         }
 
-        public void SetProbabilitys(int pSelection, int pMutation)
+        public void SetProbabilitys(int pCrossingover, int pMutation)
         {
-            _newConfig.ProbabilityOfSelection = pSelection;
+            _newConfig.ProbabilityOfCrossingover = pCrossingover;
             _newConfig.ProbabilityOfMutation = pMutation;
         }
 
@@ -373,9 +373,9 @@ namespace Best_Pass.BusinessLayer
         {
             return _newConfig.ProbabilityOfMutation;
         }
-        public int GetPSelection()
+        public int GetPCrossingover()
         {
-            return _newConfig.ProbabilityOfSelection;
+            return _newConfig.ProbabilityOfCrossingover;
         }
         public double GetFitnessFunctionParametr()
         {
@@ -437,7 +437,7 @@ namespace Best_Pass.BusinessLayer
             sw.WriteLine(_newConfig.Crossingover.GetName());
             sw.WriteLine();
             sw.WriteLine(_newConfig.ProbabilityOfMutation);
-            sw.WriteLine(_newConfig.ProbabilityOfSelection);
+            sw.WriteLine(_newConfig.ProbabilityOfCrossingover);
             sw.Close();
         }
 
@@ -548,7 +548,7 @@ namespace Best_Pass.BusinessLayer
             }
             sr.ReadLine();
             _newConfig.ProbabilityOfMutation = Convert.ToInt16(sr.ReadLine());
-            _newConfig.ProbabilityOfSelection = Convert.ToInt16(sr.ReadLine());
+            _newConfig.ProbabilityOfCrossingover = Convert.ToInt16(sr.ReadLine());
             sr.Close();
         }
 
@@ -559,7 +559,7 @@ namespace Best_Pass.BusinessLayer
             {
                 tracks[i] = _newConfig.Tracks[i].Clone();
             }
-            _newGA = new GEngine(tracks, _newConfig.ProbabilityOfSelection, _newConfig.ProbabilityOfMutation, _newConfig.FitnessFunction, _newConfig.Mutation, _newConfig.Crossingover, _newConfig.Selection);
+            _newGA = new GEngine(tracks, _newConfig.ProbabilityOfCrossingover, _newConfig.ProbabilityOfMutation, _newConfig.FitnessFunction, _newConfig.Mutation, _newConfig.Crossingover, _newConfig.Selection);
             _newGA.Run();
         }
     }
