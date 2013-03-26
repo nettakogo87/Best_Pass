@@ -298,6 +298,7 @@
             this.RibsDataGridView.RowHeadersVisible = false;
             this.RibsDataGridView.Size = new System.Drawing.Size(230, 394);
             this.RibsDataGridView.TabIndex = 0;
+            this.RibsDataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.RibsDataGridView_CellBeginEdit);
             this.RibsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.RibsDataGridView_CellValueChanged);
             // 
             // StartPoint

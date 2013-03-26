@@ -93,9 +93,34 @@ namespace Best_Pass.PresentationLayer
         {
             if (e.RowIndex > -1)
             {
-                string weight = RibsDataGridView[2, e.RowIndex].Value.ToString();
-                _mainController.ChangeWeightOfRip(e.RowIndex, Convert.ToDouble(weight));
-                RenderViewGraph();
+                try
+                {
+                    string weight = RibsDataGridView[2, e.RowIndex].Value.ToString();
+                    if (1 > Convert.ToInt32(weight) || 2000000 < Convert.ToInt32(weight))
+                    {
+                        throw new ConstraintLengthOfRibException();
+                    }
+                    _mainController.ChangeWeightOfRip(e.RowIndex, Convert.ToDouble(weight));
+                    RenderViewGraph();
+                }
+                catch (ConstraintLengthOfRibException ex)
+                {
+                    var result = MessageBox.Show(ex.Message, ex.ToString(), MessageBoxButtons.OK,
+                                                 MessageBoxIcon.Question);
+                    RibsDataGridView[e.ColumnIndex, e.RowIndex].Value =
+                        RibsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText;
+                }
+                catch
+                {
+                    var result = MessageBox.Show(@"Вы что-то ввели не правильно!", @"Ошибка", MessageBoxButtons.OK,
+                                                 MessageBoxIcon.Question);
+                    RibsDataGridView[e.ColumnIndex, e.RowIndex].Value =
+                        RibsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText;
+                }
+                finally
+                {
+                    RibsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText = String.Empty;
+                }
             }
         }
 
@@ -117,7 +142,7 @@ namespace Best_Pass.PresentationLayer
                 Rib rib = pureGraph.GetRib(i);
                 string startPoint = rib.StartNode.ToString();
                 string endPoint = rib.EndNode.ToString();
-                int weight = Convert.ToInt16(rib.Weight.ToString());
+                int weight = Convert.ToInt32(rib.Weight.ToString());
                 Microsoft.Glee.Drawing.Edge edge = graph.AddEdge(startPoint, endPoint);
                 edge.Attr.Label = weight.ToString();
                 edge.Attr.ArrowHeadAtSource = ArrowStyle.None;
@@ -670,69 +695,69 @@ namespace Best_Pass.PresentationLayer
                 ProbablyOfMutationTextBox.Text = "100";
             }
 
-            List<int> aliasMutant = new List<int>();
+            List<string> aliasMutant = new List<string>();
             if (FourPointMCheckBox.Checked)
             {
-                aliasMutant.Add(1);
+                aliasMutant.Add("FourPointMutation");
             }
             if (TwoPointMCheckBox.Checked)
             {
-                aliasMutant.Add(2);
+                aliasMutant.Add("TwoPointMutation");
             }
             if (NotRandomMCheckBox.Checked)
             {
-                aliasMutant.Add(3);
+                aliasMutant.Add("NotRandomMutation");
             }
 
-            List<int> aliasSelection = new List<int>();
+            List<string> aliasSelection = new List<string>();
             if (TournamentSCheckBox.Checked)
             {
-                aliasSelection.Add(1);
+                aliasSelection.Add("TournamentSelection");
             }
             if (RankingSCheckBox.Checked)
             {
-                aliasSelection.Add(2);
+                aliasSelection.Add("RankingSelection");
             }
             if (RouletteSCheckBox.Checked)
             {
-                aliasSelection.Add(3);
+                aliasSelection.Add("RouletteSelection");
             }
 
-            List<int> aliasCrossingover = new List<int>();
+            List<string> aliasCrossingover = new List<string>();
             if (CyclicalCCheckBox.Checked)
             {
-                aliasCrossingover.Add(1);
+                aliasCrossingover.Add("CyclicalCrossingover");
             }
             if (InversionCCheckBox.Checked)
             {
-                aliasCrossingover.Add(2);
+                aliasCrossingover.Add("InversionCrossingover");
             }
             if (OnePointCCheckBox.Checked)
             {
-                aliasCrossingover.Add(3);
+                aliasCrossingover.Add("OnePointCrossingover");
             }
             if (TwoPointCCheckBox.Checked)
             {
-                aliasCrossingover.Add(4);
+                aliasCrossingover.Add("TwoPointCrossingover");
             }
 
-            int aliasFitnessFunction = 0;
+            string aliasFitnessFunction = "BestReps";
             double param = 0;
             try
             {
                 if (NumberOfGenerationsRadioButton.Checked)
                 {
-                    aliasFitnessFunction = 1;
+                    aliasFitnessFunction = "GenerationCounter";
                     param = Convert.ToDouble(NumberOfGenerationsTextBox.Text);
                 }
                 if (BestRepsRadioButton.Checked)
                 {
-                    aliasFitnessFunction = 2;
+                    aliasFitnessFunction = "BestReps";
                     param = Convert.ToDouble(BestRepsTextBox.Text);
                 }
                 if (AchieveBetterRadioButton.Checked)
                 {
-                    aliasFitnessFunction = 3;
+                    aliasFitnessFunction = "ReachWantedResult";
                     param = Convert.ToDouble(AchieveBetterTextBox.Text);
                 }
                 if (param.CompareTo(0) == -1 || param.CompareTo(2000000) == 1)
@@ -846,6 +871,12 @@ namespace Best_Pass.PresentationLayer
         {
             PersonsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText =
                 PersonsDataGridView[e.ColumnIndex, e.RowIndex].Value.ToString();
+        }
+
+        private void RibsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            RibsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText =
+                RibsDataGridView[e.ColumnIndex, e.RowIndex].Value.ToString();
         }
     }
 }
