@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
 using System.Threading;
+using Best_Pass.BusinessLayer.Modules;
 using GeneticEngine;
 using GeneticEngine.Crossingover;
 using GeneticEngine.FitnessFunction;
@@ -13,6 +14,8 @@ using GeneticEngine.Mutation;
 using GeneticEngine.ProxyOperation;
 using GeneticEngine.Selection;
 using GeneticEngine.Track;
+using Ninject;
+using Best_Pass.BusinessLayer.Factorys;
 
 
 namespace Best_Pass.BusinessLayer
@@ -23,6 +26,10 @@ namespace Best_Pass.BusinessLayer
         {
             Search, Quality, Singl
         };
+        public enum TrackType
+        {
+            ClosedTrack, UnclosedTrack
+        }
         private Configuration _newConfig;
         private GEngine _newGA;
         private Random _r = new Random();
@@ -78,7 +85,8 @@ namespace Best_Pass.BusinessLayer
             _newConfig.Tracks = new AbstractTrack[persons.Count];
             for (int i = 0; i < persons.Count; i++)
             {
-                _newConfig.Tracks[i] = new ClosedTrack(persons[i], _newConfig.Graph);
+                ITrackFactory trackFactory = new TrackFactory();
+                _newConfig.Tracks[i] = trackFactory.CreateTrack("ClosedTrack", persons[i], _newConfig.Graph);
             }
         }
 
@@ -149,123 +157,68 @@ namespace Best_Pass.BusinessLayer
             return _newConfig.Tracks;
         }
 
-        public void CreateMutation(AlgorithmMode algorithmMode, int[] aliasMutations)
+        public void CreateMutation(AlgorithmMode algorithmMode, string[] aliasMutations)
         {
+            MutationFactory mutationFactory = new MutationFactory();
             if (AlgorithmMode.Singl == algorithmMode)
             {
-                switch (aliasMutations[0])
-                {
-                    case 1:
-                        _newConfig.Mutation = new FourPointMutation();
-                        break;
-                    case 2:
-                        _newConfig.Mutation = new TwoPointMutation();
-                        break;
-                    case 3:
-                        _newConfig.Mutation = new NotRandomMutation();
-                        break;
-                    default:
-                        _newConfig.Mutation = new TwoPointMutation();
-                        break;
-                }
+                _newConfig.Mutation = mutationFactory.CreateMutation(aliasMutations[0]);
             }
             if (AlgorithmMode.Quality == algorithmMode)
             {
                 List<ProxyMutation> proxyMutationList = GetProxyMutationList(aliasMutations);
-                _newConfig.Mutation = new QualityCountsMutation(proxyMutationList, 0);
+                _newConfig.Mutation = mutationFactory.CreateMutation("QualityCountsMutation", proxyMutationList, 0);
             }
             if (AlgorithmMode.Search == algorithmMode)
             {
                 List<ProxyMutation> proxyMutationList = GetProxyMutationList(aliasMutations);
-                _newConfig.Mutation = new SearchBestMutation(proxyMutationList);
+                _newConfig.Mutation = mutationFactory.CreateMutation("SearchBestMutation", proxyMutationList, 0);
             }
         }
 
-        public void CreateSelection(AlgorithmMode algorithmMode, int[] aliasSelection)
+        public void CreateSelection(AlgorithmMode algorithmMode, string[] aliasSelection)
         {
+            SelectionFactory selectionFactory = new SelectionFactory();
             if (AlgorithmMode.Singl == algorithmMode)
             {
-                switch (aliasSelection[0])
-                {
-                    case 1:
-                        _newConfig.Selection = new TournamentSelection();
-                        break;
-                    case 2:
-                        _newConfig.Selection = new RankingSelection();
-                        break;
-                    case 3:
-                        _newConfig.Selection = new RouletteSelection();
-                        break;
-                    default:
-                        _newConfig.Selection = new TournamentSelection();
-                        break;
-                }
+                _newConfig.Selection = selectionFactory.CreateSelection(aliasSelection[0]);
             }
             if (AlgorithmMode.Quality == algorithmMode)
             {
                 List<ProxySelection> proxySelectionList = GetProxySelectionList(aliasSelection);
-                _newConfig.Selection = new QualityCountsSelection(proxySelectionList);
+                _newConfig.Selection = selectionFactory.CreateSelection("QualityCountsSelection", proxySelectionList);
             }
             if (AlgorithmMode.Search == algorithmMode)
             {
                 List<ProxySelection> proxySelectionList = GetProxySelectionList(aliasSelection);
-                _newConfig.Selection = new SearchBestSelection(proxySelectionList);
+                _newConfig.Selection = selectionFactory.CreateSelection("SearchBestSelection", proxySelectionList);
             }
         }
 
-        public void CreateCrossingover(AlgorithmMode algorithmMode, int[] aliasCrossingover)
+        public void CreateCrossingover(AlgorithmMode algorithmMode, string[] aliasCrossingover)
         {
+            CrossingoverFactory crossingoverFactory = new CrossingoverFactory();
             if (AlgorithmMode.Singl == algorithmMode)
             {
-                switch (aliasCrossingover[0])
-                {
-                    case 1:
-                        _newConfig.Crossingover = new CyclicalCrossingover();
-                        break;
-                    case 2:
-                        _newConfig.Crossingover = new InversionCrossingover();
-                        break;
-                    case 3:
-                        _newConfig.Crossingover = new OnePointCrossingover();
-                        break;
-                    case 4:
-                        _newConfig.Crossingover = new TwoPointCrossingover();
-                        break;
-                    default:
-                        _newConfig.Crossingover = new TwoPointCrossingover();
-                        break;
-                }
+                _newConfig.Crossingover = crossingoverFactory.CreateCrossingover(aliasCrossingover[0]);
             }
             if (AlgorithmMode.Quality == algorithmMode)
             {
                 List<ProxyCrossingover> proxyCrossingoverList = GetProxyCrossingoverList(aliasCrossingover);
-                _newConfig.Crossingover = new QualityCountsCrossingover(proxyCrossingoverList, 0);
+                _newConfig.Crossingover = crossingoverFactory.CreateCrossingover("QualityCountsCrossingover", proxyCrossingoverList, 0);
             }
             if (AlgorithmMode.Search == algorithmMode)
             {
                 List<ProxyCrossingover> proxyCrossingoverList = GetProxyCrossingoverList(aliasCrossingover);
-                _newConfig.Crossingover = new SearchBestCrossingover(proxyCrossingoverList);
+                _newConfig.Crossingover = crossingoverFactory.CreateCrossingover("SearchBestCrossingover", proxyCrossingoverList, 0);
             }
         }
 
-        public void CreateFitnessFunction(int fitnessFunction, double param)
+        public void CreateFitnessFunction(string fitnessName, double param)
         {
             _newConfig.FitnessFunctionParametr = param;
-            switch (fitnessFunction)
-            {
-                case 1:
-                    _newConfig.FitnessFunction = new GenerationCounter((int)param);
-                    break;
-                case 2:
-                    _newConfig.FitnessFunction = new BestReps((int)param);
-                    break;
-                case 3:
-                    _newConfig.FitnessFunction = new ReachWantedResult(param);
-                    break;
-                default:
-                    _newConfig.FitnessFunction = new ReachWantedResult(param);
-                    break;
-            }
+            FitnessFunctionFactory fitnessFunctionFactory = new FitnessFunctionFactory();
+            _newConfig.FitnessFunction = fitnessFunctionFactory.CreateFitnessFunction(fitnessName, param);
         }
 
         public void SetProbabilitys(int pCrossingover, int pMutation)
@@ -274,79 +227,22 @@ namespace Best_Pass.BusinessLayer
             _newConfig.ProbabilityOfMutation = pMutation;
         }
 
-        private static List<ProxyMutation> GetProxyMutationList(int[] aliasMutations)
+        private static List<ProxyMutation> GetProxyMutationList(string[] aliasMutations)
         {
-            List<ProxyMutation> proxyMutationList = new List<ProxyMutation>();
-            for (int i = 0; i < aliasMutations.Length; i++)
-            {
-                switch (aliasMutations[i])
-                {
-                    case 1:
-                        proxyMutationList.Add(new ProxyMutation(new FourPointMutation()));
-                        break;
-                    case 2:
-                        proxyMutationList.Add(new ProxyMutation(new TwoPointMutation()));
-                        break;
-                    case 3:
-                        proxyMutationList.Add(new ProxyMutation(new NotRandomMutation()));
-                        break;
-                    default:
-                        proxyMutationList.Add(new ProxyMutation(new TwoPointMutation()));
-                        break;
-                }
-            }
-            return proxyMutationList;
+            MutationFactory mutationFactory = new MutationFactory();
+            return aliasMutations.Select(t => new ProxyMutation(mutationFactory.CreateMutation(t))).ToList();
         }
 
-        private static List<ProxySelection> GetProxySelectionList(int[] aliasSelection)
+        private static List<ProxySelection> GetProxySelectionList(string[] aliasSelection)
         {
-            List<ProxySelection> proxySelectionsList = new List<ProxySelection>();
-            for (int i = 0; i < aliasSelection.Length; i++)
-            {
-                switch (aliasSelection[i])
-                {
-                    case 1:
-                        proxySelectionsList.Add(new ProxySelection(new TournamentSelection()));
-                        break;
-                    case 2:
-                        proxySelectionsList.Add(new ProxySelection(new RankingSelection()));
-                        break;
-                    case 3:
-                        proxySelectionsList.Add(new ProxySelection(new RouletteSelection()));
-                        break;
-                    default:
-                        proxySelectionsList.Add(new ProxySelection(new TournamentSelection()));
-                        break;
-                }
-            }
-            return proxySelectionsList;
+            SelectionFactory selectionFactory = new SelectionFactory();
+            return aliasSelection.Select(t => new ProxySelection(selectionFactory.CreateSelection(t))).ToList();
         }
 
-        private static List<ProxyCrossingover> GetProxyCrossingoverList(int[] aliasCrossingover)
+        private static List<ProxyCrossingover> GetProxyCrossingoverList(string[] aliasCrossingover)
         {
-            List<ProxyCrossingover> proxyCrossingoverList = new List<ProxyCrossingover>();
-            for (int i = 0; i < aliasCrossingover.Length; i++)
-            {
-                switch (aliasCrossingover[i])
-                {
-                    case 1:
-                        proxyCrossingoverList.Add(new ProxyCrossingover(new CyclicalCrossingover()));
-                        break;
-                    case 2:
-                        proxyCrossingoverList.Add(new ProxyCrossingover(new InversionCrossingover()));
-                        break;
-                    case 3:
-                        proxyCrossingoverList.Add(new ProxyCrossingover(new OnePointCrossingover()));
-                        break;
-                    case 4:
-                        proxyCrossingoverList.Add(new ProxyCrossingover(new TwoPointCrossingover()));
-                        break;
-                    default:
-                        proxyCrossingoverList.Add(new ProxyCrossingover(new TwoPointCrossingover()));
-                        break;
-                }
-            }
-            return proxyCrossingoverList;
+            CrossingoverFactory crossingoverFactory = new CrossingoverFactory();
+            return aliasCrossingover.Select(t => new ProxyCrossingover(crossingoverFactory.CreateCrossingover(t))).ToList();
         }
 
         public IMutation GetMutation()
