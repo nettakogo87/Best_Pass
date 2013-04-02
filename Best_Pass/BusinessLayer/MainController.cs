@@ -33,10 +33,14 @@ namespace Best_Pass.BusinessLayer
         private Configuration _newConfig;
         private GEngine _newGA;
         private Random _r = new Random();
+        public DB_GeneticsDataSet GeneticsDataSet { get; private set; }
+        public DB_GeneticsDataSetTableAdapters.LaunchesTableAdapter LaunchTableAdapter { get; private set; }
+        public UserSettings UserSettings { get; private set; }
 
         public MainController()
         {
             _newConfig = new Configuration();
+            UserSettings = new UserSettings();
         }
 
         public void CreateGraph(int points, int  scopeStart, int scopeEnd)
@@ -75,7 +79,7 @@ namespace Best_Pass.BusinessLayer
 
         public void ChangeWeightOfRip(int index, double newWeight)
         {
-            Rib newRib = _newConfig.Graph.GetRib(index);
+            Rib newRib = _newConfig.Graph.GetRibByIndex(index);
             newRib.Weight = newWeight;
             _newConfig.Graph.SetRib(index, newRib);
         }
@@ -216,15 +220,15 @@ namespace Best_Pass.BusinessLayer
 
         public void CreateFitnessFunction(string fitnessName, double param)
         {
-            _newConfig.FitnessFunctionParametr = param;
+            _newConfig.FitnessParam = param;
             FitnessFunctionFactory fitnessFunctionFactory = new FitnessFunctionFactory();
             _newConfig.FitnessFunction = fitnessFunctionFactory.CreateFitnessFunction(fitnessName, param);
         }
 
         public void SetProbabilitys(int pCrossingover, int pMutation)
         {
-            _newConfig.ProbabilityOfCrossingover = pCrossingover;
-            _newConfig.ProbabilityOfMutation = pMutation;
+            _newConfig.ProbOfCrossingover = pCrossingover;
+            _newConfig.ProbOfMutation = pMutation;
         }
 
         private static List<ProxyMutation> GetProxyMutationList(string[] aliasMutations)
@@ -245,55 +249,9 @@ namespace Best_Pass.BusinessLayer
             return aliasCrossingover.Select(t => new ProxyCrossingover(crossingoverFactory.CreateCrossingover(t))).ToList();
         }
 
-        public IMutation GetMutation()
+        public Configuration GetConfig()
         {
-            return _newConfig.Mutation;
-        }
-        public ISelection GetSelection()
-        {
-            return _newConfig.Selection;
-        }
-        public ICrossingover GetCrossingover()
-        {
-            return _newConfig.Crossingover;
-        }
-        public IFitnessFunction GetFitnessFunction()
-        {
-            return _newConfig.FitnessFunction;
-        }
-        public int GetAlgorithmMode()
-        {
-            return _newConfig.AlgMode;
-        }
-        public int GetPMutation()
-        {
-            return _newConfig.ProbabilityOfMutation;
-        }
-        public int GetPCrossingover()
-        {
-            return _newConfig.ProbabilityOfCrossingover;
-        }
-        public double GetFitnessFunctionParametr()
-        {
-            return _newConfig.FitnessFunctionParametr;
-        }
-
-        public string GetConfigName()
-        {
-            return _newConfig.NameOfConfiguration;
-        }
-        public int GetCountOfReplays()
-        {
-            return _newConfig.CountOfReplays;
-        }
-
-        public void SetConfigName(string name)
-        {
-            _newConfig.NameOfConfiguration = name;
-        }
-        public void SetCountOfReplays(int countOfReplays)
-        {
-            _newConfig.CountOfReplays = countOfReplays;
+            return _newConfig;
         }
 
         public void SaveConfiguration( string path)
@@ -301,7 +259,7 @@ namespace Best_Pass.BusinessLayer
             FileInfo newConfigurationFile = new FileInfo(path);
             StreamWriter sw = newConfigurationFile.CreateText();
 
-            sw.WriteLine(_newConfig.NameOfConfiguration);
+            sw.WriteLine(_newConfig.ConfigName);
             sw.WriteLine(_newConfig.CountOfReplays);
             sw.WriteLine(_newConfig.AlgMode);
             sw.WriteLine();
@@ -311,7 +269,7 @@ namespace Best_Pass.BusinessLayer
             {
                 for (int j = i + 1; j < _newConfig.Graph.CountOfNode; j++)
                 {
-                    sw.WriteLine(_newConfig.Graph.GetWeightByRip(i, j));
+                    sw.WriteLine(_newConfig.Graph.GetRibByNodes(i, j));
                 }
             }
             sw.WriteLine();
@@ -326,14 +284,14 @@ namespace Best_Pass.BusinessLayer
             }
             sw.WriteLine();
             sw.WriteLine(_newConfig.FitnessFunction.GetName());
-            sw.WriteLine(_newConfig.FitnessFunctionParametr);
+            sw.WriteLine(_newConfig.FitnessParam);
             sw.WriteLine();
             sw.WriteLine(_newConfig.Mutation.GetName());
             sw.WriteLine(_newConfig.Selection.GetName());
             sw.WriteLine(_newConfig.Crossingover.GetName());
             sw.WriteLine();
-            sw.WriteLine(_newConfig.ProbabilityOfMutation);
-            sw.WriteLine(_newConfig.ProbabilityOfCrossingover);
+            sw.WriteLine(_newConfig.ProbOfMutation);
+            sw.WriteLine(_newConfig.ProbOfCrossingover);
             sw.Close();
         }
 
@@ -341,7 +299,7 @@ namespace Best_Pass.BusinessLayer
         {
             FileInfo newConfigurationFile = new FileInfo(path);
             StreamReader sr = newConfigurationFile.OpenText();
-            _newConfig.NameOfConfiguration = sr.ReadLine();
+            _newConfig.ConfigName = sr.ReadLine();
             _newConfig.CountOfReplays = Convert.ToInt16(sr.ReadLine());
             _newConfig.AlgMode = Convert.ToInt16(sr.ReadLine());
             sr.ReadLine();
@@ -384,67 +342,23 @@ namespace Best_Pass.BusinessLayer
             }
             sr.ReadLine();
             string nameOfFitnessFunction = sr.ReadLine();
-            double paramOfFitnessFunction = Convert.ToDouble(sr.ReadLine());
-            _newConfig.FitnessFunctionParametr = paramOfFitnessFunction;
-            if (nameOfFitnessFunction == "BestReps")
-            {
-                _newConfig.FitnessFunction = new BestReps((int)paramOfFitnessFunction);
-            }
-            if (nameOfFitnessFunction == "GenerationCounter")
-            {
-                _newConfig.FitnessFunction = new GenerationCounter((int)paramOfFitnessFunction);
-            }
-            if (nameOfFitnessFunction == "ReachWantedResult")
-            {
-                _newConfig.FitnessFunction = new ReachWantedResult((int)paramOfFitnessFunction);
-            }
+            double paramOfFitness = Convert.ToDouble(sr.ReadLine());
+            _newConfig.FitnessParam = paramOfFitness;
+            FitnessFunctionFactory fitnessFunctionFactory = new FitnessFunctionFactory();
+            _newConfig.FitnessFunction = fitnessFunctionFactory.CreateFitnessFunction(nameOfFitnessFunction, paramOfFitness);
             sr.ReadLine();
             string nameOfMutation = sr.ReadLine();
-            if (nameOfMutation == "FourPointMutation")
-            {
-                _newConfig.Mutation = new FourPointMutation();
-            }
-            if (nameOfMutation == "TwoPointMutation")
-            {
-                _newConfig.Mutation = new TwoPointMutation();
-            }
-            if (nameOfMutation == "NotRandomMutation")
-            {
-                _newConfig.Mutation = new NotRandomMutation();
-            }
+            MutationFactory mutationFactory = new MutationFactory();
+            _newConfig.Mutation = mutationFactory.CreateMutation(nameOfMutation);
             string nameOfSelection = sr.ReadLine();
-            if (nameOfSelection == "RankingSelection")
-            {
-                _newConfig.Selection = new RankingSelection();
-            }
-            if (nameOfSelection == "RouletteSelection")
-            {
-                _newConfig.Selection = new RouletteSelection();
-            }
-            if (nameOfSelection == "TournamentSelection")
-            {
-                _newConfig.Selection = new TournamentSelection();
-            }
+            SelectionFactory selectionFactory = new SelectionFactory();
+            _newConfig.Selection = selectionFactory.CreateSelection(nameOfSelection);
             string nameOfCrossingover = sr.ReadLine();
-            if (nameOfCrossingover == "CyclicalCrossingover")
-            {
-                _newConfig.Crossingover = new CyclicalCrossingover();
-            }
-            if (nameOfCrossingover == "InversionCrossingover")
-            {
-                _newConfig.Crossingover = new InversionCrossingover();
-            }
-            if (nameOfCrossingover == "OnePointCrossingover")
-            {
-                _newConfig.Crossingover = new OnePointCrossingover();
-            }
-            if (nameOfCrossingover == "TwoPointCrossingover")
-            {
-                _newConfig.Crossingover = new TwoPointCrossingover();
-            }
+            CrossingoverFactory crossingoverFactory = new CrossingoverFactory();
+            _newConfig.Crossingover = crossingoverFactory.CreateCrossingover(nameOfCrossingover);
             sr.ReadLine();
-            _newConfig.ProbabilityOfMutation = Convert.ToInt16(sr.ReadLine());
-            _newConfig.ProbabilityOfCrossingover = Convert.ToInt16(sr.ReadLine());
+            _newConfig.ProbOfMutation = Convert.ToInt16(sr.ReadLine());
+            _newConfig.ProbOfCrossingover = Convert.ToInt16(sr.ReadLine());
             sr.Close();
         }
 
@@ -455,8 +369,15 @@ namespace Best_Pass.BusinessLayer
             {
                 tracks[i] = _newConfig.Tracks[i].Clone();
             }
-            _newGA = new GEngine(tracks, _newConfig.ProbabilityOfCrossingover, _newConfig.ProbabilityOfMutation, _newConfig.FitnessFunction, _newConfig.Mutation, _newConfig.Crossingover, _newConfig.Selection);
+            _newGA = new GEngine(tracks, _newConfig.ProbOfCrossingover, _newConfig.ProbOfMutation, _newConfig.FitnessFunction, _newConfig.Mutation, _newConfig.Crossingover, _newConfig.Selection);
             _newGA.Run();
+        }
+
+        public void LoadTableOfLaunch()
+        {
+            GeneticsDataSet = new DB_GeneticsDataSet();
+            LaunchTableAdapter = new DB_GeneticsDataSetTableAdapters.LaunchesTableAdapter();
+            LaunchTableAdapter.Fill(GeneticsDataSet.Launches);
         }
     }
 }
