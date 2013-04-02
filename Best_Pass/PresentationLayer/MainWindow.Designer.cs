@@ -108,6 +108,24 @@
             this.Num = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NameOfConfiguration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CountOfReplays = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TableOfLaunchTabPage = new System.Windows.Forms.TabPage();
+            this.TableOfLaunchgGroupBox = new System.Windows.Forms.GroupBox();
+            this.DetailLabel = new System.Windows.Forms.Label();
+            this.DeleteLaunchButton = new System.Windows.Forms.Button();
+            this.DetailPersonsButton = new System.Windows.Forms.Button();
+            this.DetailSelectButton = new System.Windows.Forms.Button();
+            this.DetailMutButton = new System.Windows.Forms.Button();
+            this.DetailCrossButton = new System.Windows.Forms.Button();
+            this.TableOfLaunchDataGridView = new System.Windows.Forms.DataGridView();
+            this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OperationTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TypeOfCrossingover = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TypeOfMutation = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TypeOfSelection = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TypeOfFitness = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.NumberOfGenerations = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BestResult = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MainMenuStrip = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CreateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -119,6 +137,8 @@
             this.WorkToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.OptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SettingsTabControl.SuspendLayout();
             this.GraphTabPage.SuspendLayout();
             this.ControlGraphGroupBox.SuspendLayout();
@@ -139,6 +159,9 @@
             this.WorckModeGroupBox.SuspendLayout();
             this.StartModTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ConfigAlgDataGridView)).BeginInit();
+            this.TableOfLaunchTabPage.SuspendLayout();
+            this.TableOfLaunchgGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TableOfLaunchDataGridView)).BeginInit();
             this.MainMenuStrip.SuspendLayout();
             this.WorkStatusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -169,6 +192,7 @@
             this.SettingsTabControl.Controls.Add(this.PersonSettingsTabPage);
             this.SettingsTabControl.Controls.Add(this.AlgorithmTabPage);
             this.SettingsTabControl.Controls.Add(this.StartModTabPage);
+            this.SettingsTabControl.Controls.Add(this.TableOfLaunchTabPage);
             this.SettingsTabControl.Location = new System.Drawing.Point(12, 28);
             this.SettingsTabControl.Name = "SettingsTabControl";
             this.SettingsTabControl.SelectedIndex = 0;
@@ -986,10 +1010,176 @@
             this.CountOfReplays.HeaderText = "Количество повторений";
             this.CountOfReplays.Name = "CountOfReplays";
             // 
+            // TableOfLaunchTabPage
+            // 
+            this.TableOfLaunchTabPage.Controls.Add(this.TableOfLaunchgGroupBox);
+            this.TableOfLaunchTabPage.Location = new System.Drawing.Point(4, 22);
+            this.TableOfLaunchTabPage.Name = "TableOfLaunchTabPage";
+            this.TableOfLaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.TableOfLaunchTabPage.Size = new System.Drawing.Size(904, 431);
+            this.TableOfLaunchTabPage.TabIndex = 4;
+            this.TableOfLaunchTabPage.Text = "Таблица запусков";
+            this.TableOfLaunchTabPage.UseVisualStyleBackColor = true;
+            // 
+            // TableOfLaunchgGroupBox
+            // 
+            this.TableOfLaunchgGroupBox.Controls.Add(this.DetailLabel);
+            this.TableOfLaunchgGroupBox.Controls.Add(this.DeleteLaunchButton);
+            this.TableOfLaunchgGroupBox.Controls.Add(this.DetailPersonsButton);
+            this.TableOfLaunchgGroupBox.Controls.Add(this.DetailSelectButton);
+            this.TableOfLaunchgGroupBox.Controls.Add(this.DetailMutButton);
+            this.TableOfLaunchgGroupBox.Controls.Add(this.DetailCrossButton);
+            this.TableOfLaunchgGroupBox.Controls.Add(this.TableOfLaunchDataGridView);
+            this.TableOfLaunchgGroupBox.Location = new System.Drawing.Point(6, 6);
+            this.TableOfLaunchgGroupBox.Name = "TableOfLaunchgGroupBox";
+            this.TableOfLaunchgGroupBox.Size = new System.Drawing.Size(892, 419);
+            this.TableOfLaunchgGroupBox.TabIndex = 0;
+            this.TableOfLaunchgGroupBox.TabStop = false;
+            this.TableOfLaunchgGroupBox.Text = "Запуски";
+            // 
+            // DetailLabel
+            // 
+            this.DetailLabel.AutoSize = true;
+            this.DetailLabel.Location = new System.Drawing.Point(6, 395);
+            this.DetailLabel.Name = "DetailLabel";
+            this.DetailLabel.Size = new System.Drawing.Size(199, 13);
+            this.DetailLabel.TabIndex = 6;
+            this.DetailLabel.Text = "Посмотреть подробную информацию:";
+            // 
+            // DeleteLaunchButton
+            // 
+            this.DeleteLaunchButton.Location = new System.Drawing.Point(736, 390);
+            this.DeleteLaunchButton.Name = "DeleteLaunchButton";
+            this.DeleteLaunchButton.Size = new System.Drawing.Size(115, 23);
+            this.DeleteLaunchButton.TabIndex = 5;
+            this.DeleteLaunchButton.Text = "Удалить запись";
+            this.DeleteLaunchButton.UseVisualStyleBackColor = true;
+            // 
+            // DetailPersonsButton
+            // 
+            this.DetailPersonsButton.Location = new System.Drawing.Point(211, 390);
+            this.DetailPersonsButton.Name = "DetailPersonsButton";
+            this.DetailPersonsButton.Size = new System.Drawing.Size(113, 23);
+            this.DetailPersonsButton.TabIndex = 4;
+            this.DetailPersonsButton.Text = "Дерево покалений";
+            this.DetailPersonsButton.UseVisualStyleBackColor = true;
+            // 
+            // DetailSelectButton
+            // 
+            this.DetailSelectButton.Location = new System.Drawing.Point(598, 390);
+            this.DetailSelectButton.Name = "DetailSelectButton";
+            this.DetailSelectButton.Size = new System.Drawing.Size(132, 23);
+            this.DetailSelectButton.TabIndex = 3;
+            this.DetailSelectButton.Text = "Селекция";
+            this.DetailSelectButton.UseVisualStyleBackColor = true;
+            // 
+            // DetailMutButton
+            // 
+            this.DetailMutButton.Location = new System.Drawing.Point(467, 390);
+            this.DetailMutButton.Name = "DetailMutButton";
+            this.DetailMutButton.Size = new System.Drawing.Size(125, 23);
+            this.DetailMutButton.TabIndex = 2;
+            this.DetailMutButton.Text = "Мутация";
+            this.DetailMutButton.UseVisualStyleBackColor = true;
+            // 
+            // DetailCrossButton
+            // 
+            this.DetailCrossButton.Location = new System.Drawing.Point(330, 390);
+            this.DetailCrossButton.Name = "DetailCrossButton";
+            this.DetailCrossButton.Size = new System.Drawing.Size(131, 23);
+            this.DetailCrossButton.TabIndex = 1;
+            this.DetailCrossButton.Text = "Кроссинговер";
+            this.DetailCrossButton.UseVisualStyleBackColor = true;
+            // 
+            // TableOfLaunchDataGridView
+            // 
+            this.TableOfLaunchDataGridView.AllowUserToAddRows = false;
+            this.TableOfLaunchDataGridView.AllowUserToDeleteRows = false;
+            this.TableOfLaunchDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.TableOfLaunchDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.StartTime,
+            this.EndTime,
+            this.OperationTime,
+            this.TypeOfCrossingover,
+            this.TypeOfMutation,
+            this.TypeOfSelection,
+            this.TypeOfFitness,
+            this.NumberOfGenerations,
+            this.BestResult});
+            this.TableOfLaunchDataGridView.Location = new System.Drawing.Point(6, 19);
+            this.TableOfLaunchDataGridView.Name = "TableOfLaunchDataGridView";
+            this.TableOfLaunchDataGridView.ReadOnly = true;
+            this.TableOfLaunchDataGridView.RowHeadersVisible = false;
+            this.TableOfLaunchDataGridView.Size = new System.Drawing.Size(880, 365);
+            this.TableOfLaunchDataGridView.TabIndex = 0;
+            // 
+            // StartTime
+            // 
+            this.StartTime.HeaderText = "Начало";
+            this.StartTime.Name = "StartTime";
+            this.StartTime.ReadOnly = true;
+            // 
+            // EndTime
+            // 
+            this.EndTime.HeaderText = "Конец";
+            this.EndTime.Name = "EndTime";
+            this.EndTime.ReadOnly = true;
+            // 
+            // OperationTime
+            // 
+            this.OperationTime.HeaderText = "Затрачено времени";
+            this.OperationTime.Name = "OperationTime";
+            this.OperationTime.ReadOnly = true;
+            // 
+            // TypeOfCrossingover
+            // 
+            this.TypeOfCrossingover.HeaderText = "Тип кроссинговера";
+            this.TypeOfCrossingover.Name = "TypeOfCrossingover";
+            this.TypeOfCrossingover.ReadOnly = true;
+            this.TypeOfCrossingover.Width = 140;
+            // 
+            // TypeOfMutation
+            // 
+            this.TypeOfMutation.HeaderText = "Тип мутации";
+            this.TypeOfMutation.Name = "TypeOfMutation";
+            this.TypeOfMutation.ReadOnly = true;
+            this.TypeOfMutation.Width = 140;
+            // 
+            // TypeOfSelection
+            // 
+            this.TypeOfSelection.HeaderText = "Тип селекции";
+            this.TypeOfSelection.Name = "TypeOfSelection";
+            this.TypeOfSelection.ReadOnly = true;
+            this.TypeOfSelection.Width = 140;
+            // 
+            // TypeOfFitness
+            // 
+            this.TypeOfFitness.HeaderText = "Тип фитнес-функции";
+            this.TypeOfFitness.Name = "TypeOfFitness";
+            this.TypeOfFitness.ReadOnly = true;
+            this.TypeOfFitness.Width = 140;
+            // 
+            // NumberOfGenerations
+            // 
+            this.NumberOfGenerations.HeaderText = "Количество покалений";
+            this.NumberOfGenerations.Name = "NumberOfGenerations";
+            this.NumberOfGenerations.ReadOnly = true;
+            this.NumberOfGenerations.Width = 80;
+            // 
+            // BestResult
+            // 
+            this.BestResult.HeaderText = "Лучший результат";
+            this.BestResult.Name = "BestResult";
+            this.BestResult.ReadOnly = true;
+            this.BestResult.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.BestResult.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.BestResult.Width = 80;
+            // 
             // MainMenuStrip
             // 
             this.MainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.файлToolStripMenuItem});
+            this.файлToolStripMenuItem,
+            this.OptionsToolStripMenuItem});
             this.MainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MainMenuStrip.Name = "MainMenuStrip";
             this.MainMenuStrip.Size = new System.Drawing.Size(936, 25);
@@ -1010,25 +1200,25 @@
             // CreateToolStripMenuItem
             // 
             this.CreateToolStripMenuItem.Name = "CreateToolStripMenuItem";
-            this.CreateToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.CreateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.CreateToolStripMenuItem.Text = "Создать";
             // 
             // SaveToolStripMenuItem
             // 
             this.SaveToolStripMenuItem.Name = "SaveToolStripMenuItem";
-            this.SaveToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.SaveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.SaveToolStripMenuItem.Text = "Сохранить";
             // 
             // LoadToolStripMenuItem
             // 
             this.LoadToolStripMenuItem.Name = "LoadToolStripMenuItem";
-            this.LoadToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.LoadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.LoadToolStripMenuItem.Text = "Загрузить";
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.ExitToolStripMenuItem.Text = "Выход";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
             // 
@@ -1063,6 +1253,21 @@
             // SaveFileDialog
             // 
             this.SaveFileDialog.DefaultExt = "xml";
+            // 
+            // OptionsToolStripMenuItem
+            // 
+            this.OptionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SettingsToolStripMenuItem});
+            this.OptionsToolStripMenuItem.Name = "OptionsToolStripMenuItem";
+            this.OptionsToolStripMenuItem.Size = new System.Drawing.Size(58, 21);
+            this.OptionsToolStripMenuItem.Text = "Опции";
+            // 
+            // SettingsToolStripMenuItem
+            // 
+            this.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
+            this.SettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.SettingsToolStripMenuItem.Text = "Настройки";
+            this.SettingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -1103,6 +1308,10 @@
             this.WorckModeGroupBox.PerformLayout();
             this.StartModTabPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ConfigAlgDataGridView)).EndInit();
+            this.TableOfLaunchTabPage.ResumeLayout(false);
+            this.TableOfLaunchgGroupBox.ResumeLayout(false);
+            this.TableOfLaunchgGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TableOfLaunchDataGridView)).EndInit();
             this.MainMenuStrip.ResumeLayout(false);
             this.MainMenuStrip.PerformLayout();
             this.WorkStatusStrip.ResumeLayout(false);
@@ -1205,6 +1414,26 @@
         private System.Windows.Forms.TextBox ScopeEndTextBox;
         private System.Windows.Forms.TextBox ScopeStartTextBox;
         private System.Windows.Forms.Label ScopeLabel;
+        private System.Windows.Forms.TabPage TableOfLaunchTabPage;
+        private System.Windows.Forms.GroupBox TableOfLaunchgGroupBox;
+        private System.Windows.Forms.Button DetailCrossButton;
+        private System.Windows.Forms.DataGridView TableOfLaunchDataGridView;
+        private System.Windows.Forms.Button DeleteLaunchButton;
+        private System.Windows.Forms.Button DetailPersonsButton;
+        private System.Windows.Forms.Button DetailSelectButton;
+        private System.Windows.Forms.Button DetailMutButton;
+        private System.Windows.Forms.Label DetailLabel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn StartTime;
+        private System.Windows.Forms.DataGridViewTextBoxColumn EndTime;
+        private System.Windows.Forms.DataGridViewTextBoxColumn OperationTime;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TypeOfCrossingover;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TypeOfMutation;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TypeOfSelection;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TypeOfFitness;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NumberOfGenerations;
+        private System.Windows.Forms.DataGridViewTextBoxColumn BestResult;
+        private System.Windows.Forms.ToolStripMenuItem OptionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SettingsToolStripMenuItem;
     }
 }
 

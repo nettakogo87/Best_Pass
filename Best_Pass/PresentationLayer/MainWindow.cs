@@ -34,6 +34,7 @@ namespace Best_Pass.PresentationLayer
             RenderDataGridPersons();
             RenderAlgorithm();
             RenderLaunchMode();
+            RenderTableOfLaunch();
         }
 
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
@@ -84,7 +85,7 @@ namespace Best_Pass.PresentationLayer
             IGraph graph = _mainController.GetGraph();
             for (int i = 0; i < graph.CountOfRibs; i++)
             {
-                Rib rib = graph.GetRib(i);
+                Rib rib = graph.GetRibByIndex(i);
                 RibsDataGridView.Rows.Add(rib.StartNode, rib.EndNode, rib.Weight);
             }
         }
@@ -139,7 +140,7 @@ namespace Best_Pass.PresentationLayer
             Graph graph = new Graph("graph");
             for (int i = 0; i < pureGraph.CountOfRibs; i++)
             {
-                Rib rib = pureGraph.GetRib(i);
+                Rib rib = pureGraph.GetRibByIndex(i);
                 string startPoint = rib.StartNode.ToString();
                 string endPoint = rib.EndNode.ToString();
                 int weight = Convert.ToInt32(rib.Weight.ToString());
@@ -412,79 +413,79 @@ namespace Best_Pass.PresentationLayer
 
         private void RenderAlgorithm()
         {
-            if (_mainController.GetAlgorithmMode() == (int)MainController.AlgorithmMode.Singl)
+            if (_mainController.GetConfig().AlgMode == (int)MainController.AlgorithmMode.Singl)
             {
                 SingAlgorithmRadioButton.Checked = true;
             }
-            if (_mainController.GetAlgorithmMode() == (int)MainController.AlgorithmMode.Quality)
+            if (_mainController.GetConfig().AlgMode == (int)MainController.AlgorithmMode.Quality)
             {
                 ComparisonAlgorithmRadioButton.Checked = true;
             }
-            if (_mainController.GetAlgorithmMode() == (int)MainController.AlgorithmMode.Search)
+            if (_mainController.GetConfig().AlgMode == (int)MainController.AlgorithmMode.Search)
             {
                 SearchBestAlgorithmRadioButton.Checked = true;
             }
 
-            if (_mainController.GetFitnessFunction().GetName() == "BestReps")
+            if (_mainController.GetConfig().FitnessFunction.GetName() == "BestReps")
             {
                 BestRepsRadioButton.Checked = true;
-                BestRepsTextBox.Text = _mainController.GetFitnessFunctionParametr().ToString();
+                BestRepsTextBox.Text = _mainController.GetConfig().FitnessParam.ToString();
             }
-            if (_mainController.GetFitnessFunction().GetName() == "GenerationCounter")
+            if (_mainController.GetConfig().FitnessFunction.GetName() == "GenerationCounter")
             {
                 NumberOfGenerationsRadioButton.Checked = true;
-                BestRepsTextBox.Text = _mainController.GetFitnessFunctionParametr().ToString();
+                BestRepsTextBox.Text = _mainController.GetConfig().FitnessParam.ToString();
             }
-            if (_mainController.GetFitnessFunction().GetName() == "ReachWantedResult")
+            if (_mainController.GetConfig().FitnessFunction.GetName() == "ReachWantedResult")
             {
                 NumberOfGenerationsRadioButton.Checked = true;
-                BestRepsTextBox.Text = _mainController.GetFitnessFunctionParametr().ToString();
+                BestRepsTextBox.Text = _mainController.GetConfig().FitnessParam.ToString();
             }
 
-            if (_mainController.GetMutation().GetName() == "FourPointMutation")
+            if (_mainController.GetConfig().Mutation.GetName() == "FourPointMutation")
             {
                 FourPointMCheckBox.Checked = true;
             }
-            if (_mainController.GetMutation().GetName() == "TwoPointMutation")
+            if (_mainController.GetConfig().Mutation.GetName() == "TwoPointMutation")
             {
                 TwoPointMCheckBox.Checked = true;
             }
-            if (_mainController.GetMutation().GetName() == "NotRandomMutation")
+            if (_mainController.GetConfig().Mutation.GetName() == "NotRandomMutation")
             {
                 NotRandomMCheckBox.Checked = true;
             }
 
-            if (_mainController.GetSelection().GetName() == "RankingSelection")
+            if (_mainController.GetConfig().Selection.GetName() == "RankingSelection")
             {
                 RankingSCheckBox.Checked = true;
             }
-            if (_mainController.GetSelection().GetName() == "RouletteSelection")
+            if (_mainController.GetConfig().Selection.GetName() == "RouletteSelection")
             {
                 RouletteSCheckBox.Checked = true;
             }
-            if (_mainController.GetSelection().GetName() == "TournamentSelection")
+            if (_mainController.GetConfig().Selection.GetName() == "TournamentSelection")
             {
                 TournamentSCheckBox.Checked = true;
             }
 
-            if (_mainController.GetCrossingover().GetName() == "CyclicalCrossingover")
+            if (_mainController.GetConfig().Crossingover.GetName() == "CyclicalCrossingover")
             {
                 CyclicalCCheckBox.Checked = true;
             }
-            if (_mainController.GetCrossingover().GetName() == "InversionCrossingover")
+            if (_mainController.GetConfig().Crossingover.GetName() == "InversionCrossingover")
             {
                 InversionCCheckBox.Checked = true;
             }
-            if (_mainController.GetCrossingover().GetName() == "OnePointCrossingover")
+            if (_mainController.GetConfig().Crossingover.GetName() == "OnePointCrossingover")
             {
                 OnePointCCheckBox.Checked = true;
             }
-            if (_mainController.GetCrossingover().GetName() == "TwoPointCrossingover")
+            if (_mainController.GetConfig().Crossingover.GetName() == "TwoPointCrossingover")
             {
                 TwoPointMCheckBox.Checked = true;
             }
-            ProbablyOfMutationTextBox.Text = _mainController.GetPMutation().ToString();
-            ProbablyOfCrossingoverTextBox.Text = _mainController.GetPCrossingover().ToString();
+            ProbablyOfMutationTextBox.Text = _mainController.GetConfig().ProbOfMutation.ToString();
+            ProbablyOfCrossingoverTextBox.Text = _mainController.GetConfig().ProbOfCrossingover.ToString();
         }
 
         private void NumberOfGenerationsRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -807,21 +808,22 @@ namespace Best_Pass.PresentationLayer
         private void RenderLaunchMode()
         {
             ConfigAlgDataGridView.Rows.Clear();
-            ConfigAlgDataGridView.Rows.Add(ConfigAlgDataGridView.Rows.Count, _mainController.GetConfigName(), _mainController.GetCountOfReplays());
+            ConfigAlgDataGridView.Rows.Add(ConfigAlgDataGridView.Rows.Count, _mainController.GetConfig().ConfigName, _mainController.GetConfig().CountOfReplays);
         }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
             WorkToolStripProgressBar.Value = 5;
             _mainController.StartGA();
+            RenderTableOfLaunch();
         }
 
         private void ConfigAlgDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex > -1)
             {
-                _mainController.SetConfigName(ConfigAlgDataGridView[1, e.RowIndex].Value.ToString());
-                _mainController.SetCountOfReplays(Convert.ToInt16(ConfigAlgDataGridView[2, e.RowIndex].Value));
+                _mainController.GetConfig().ConfigName = ConfigAlgDataGridView[1, e.RowIndex].Value.ToString();
+                _mainController.GetConfig().CountOfReplays = Convert.ToInt16(ConfigAlgDataGridView[2, e.RowIndex].Value);
             }
         }
 
@@ -877,6 +879,27 @@ namespace Best_Pass.PresentationLayer
         {
             RibsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText =
                 RibsDataGridView[e.ColumnIndex, e.RowIndex].Value.ToString();
+        }
+
+        private void RenderTableOfLaunch()
+        {
+            _mainController.LoadTableOfLaunch();
+            TableOfLaunchDataGridView.Rows.Clear();
+            for (int i = 0; i < _mainController.GeneticsDataSet.Launches.Rows.Count; i++)
+            {
+                DB_GeneticsDataSet.LaunchesRow lr = _mainController.GeneticsDataSet.Launches[i];
+                TableOfLaunchDataGridView.Rows.Add(lr.StartTime, lr.EndTime, lr.OperationTime, lr.TypeOfCrossingover,
+                                                   lr.TypeOfMutation, lr.TypeOfSelection, lr.FitnessFunction,
+                                                   lr.NumberOfGenerations, lr.BestResult);
+            }
+            
+        }
+
+        private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingsWindow settingsWindow = new SettingsWindow(_mainController.UserSettings);
+            settingsWindow.ShowDialog();
+            RenderTableOfLaunch();
         }
     }
 }
