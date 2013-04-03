@@ -49,7 +49,7 @@
             this.Weight = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GraphicGraphGroupBox = new System.Windows.Forms.GroupBox();
             this.GraphPictureBox = new System.Windows.Forms.PictureBox();
-            this.PersonSettingsTabPage = new System.Windows.Forms.TabPage();
+            this.PersonsTabPage = new System.Windows.Forms.TabPage();
             this.PersonsGroupBox = new System.Windows.Forms.GroupBox();
             this.AddPersonsButton = new System.Windows.Forms.Button();
             this.DeletePersonsButton = new System.Windows.Forms.Button();
@@ -118,6 +118,16 @@
             this.DetailMutButton = new System.Windows.Forms.Button();
             this.DetailCrossButton = new System.Windows.Forms.Button();
             this.TableOfLaunchDataGridView = new System.Windows.Forms.DataGridView();
+            this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OperationTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TypeOfCrossingover = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TypeOfMutation = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TypeOfSelection = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TypeOfFitness = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.NumberOfGenerations = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BestResult = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MainMenuStrip = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CreateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -132,16 +142,6 @@
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.WorkTimer = new System.Windows.Forms.Timer(this.components);
-            this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.OperationTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TypeOfCrossingover = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TypeOfMutation = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TypeOfSelection = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TypeOfFitness = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.NumberOfGenerations = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BestResult = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SettingsTabControl.SuspendLayout();
             this.GraphTabPage.SuspendLayout();
             this.ControlGraphGroupBox.SuspendLayout();
@@ -149,7 +149,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.RibsDataGridView)).BeginInit();
             this.GraphicGraphGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GraphPictureBox)).BeginInit();
-            this.PersonSettingsTabPage.SuspendLayout();
+            this.PersonsTabPage.SuspendLayout();
             this.PersonsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PersonsDataGridView)).BeginInit();
             this.GraphViewGroupBox.SuspendLayout();
@@ -192,7 +192,7 @@
             // SettingsTabControl
             // 
             this.SettingsTabControl.Controls.Add(this.GraphTabPage);
-            this.SettingsTabControl.Controls.Add(this.PersonSettingsTabPage);
+            this.SettingsTabControl.Controls.Add(this.PersonsTabPage);
             this.SettingsTabControl.Controls.Add(this.AlgorithmTabPage);
             this.SettingsTabControl.Controls.Add(this.StartModTabPage);
             this.SettingsTabControl.Controls.Add(this.TableOfLaunchTabPage);
@@ -366,17 +366,17 @@
             this.GraphPictureBox.TabIndex = 0;
             this.GraphPictureBox.TabStop = false;
             // 
-            // PersonSettingsTabPage
+            // PersonsTabPage
             // 
-            this.PersonSettingsTabPage.Controls.Add(this.PersonsGroupBox);
-            this.PersonSettingsTabPage.Controls.Add(this.GraphViewGroupBox);
-            this.PersonSettingsTabPage.Location = new System.Drawing.Point(4, 22);
-            this.PersonSettingsTabPage.Name = "PersonSettingsTabPage";
-            this.PersonSettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PersonSettingsTabPage.Size = new System.Drawing.Size(904, 431);
-            this.PersonSettingsTabPage.TabIndex = 3;
-            this.PersonSettingsTabPage.Text = "Редактор особей";
-            this.PersonSettingsTabPage.UseVisualStyleBackColor = true;
+            this.PersonsTabPage.Controls.Add(this.PersonsGroupBox);
+            this.PersonsTabPage.Controls.Add(this.GraphViewGroupBox);
+            this.PersonsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.PersonsTabPage.Name = "PersonsTabPage";
+            this.PersonsTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.PersonsTabPage.Size = new System.Drawing.Size(904, 431);
+            this.PersonsTabPage.TabIndex = 3;
+            this.PersonsTabPage.Text = "Редактор особей";
+            this.PersonsTabPage.UseVisualStyleBackColor = true;
             // 
             // PersonsGroupBox
             // 
@@ -524,6 +524,7 @@
             this.SaveAlgorithmButton.TabIndex = 6;
             this.SaveAlgorithmButton.Text = "Сохранить конфигурацию";
             this.SaveAlgorithmButton.UseVisualStyleBackColor = true;
+            this.SaveAlgorithmButton.Click += new System.EventHandler(this.SaveAlgorithmButton_Click);
             // 
             // ApplyAlgorithmButton
             // 
@@ -970,6 +971,7 @@
             this.DeletConfigButton.TabIndex = 2;
             this.DeletConfigButton.Text = "Удалить конфигурацию";
             this.DeletConfigButton.UseVisualStyleBackColor = true;
+            this.DeletConfigButton.Visible = false;
             // 
             // AddConfigButton
             // 
@@ -1121,6 +1123,75 @@
             this.TableOfLaunchDataGridView.Size = new System.Drawing.Size(880, 365);
             this.TableOfLaunchDataGridView.TabIndex = 0;
             // 
+            // StartTime
+            // 
+            this.StartTime.HeaderText = "Начало";
+            this.StartTime.Name = "StartTime";
+            this.StartTime.ReadOnly = true;
+            // 
+            // EndTime
+            // 
+            this.EndTime.HeaderText = "Конец";
+            this.EndTime.Name = "EndTime";
+            this.EndTime.ReadOnly = true;
+            // 
+            // OperationTime
+            // 
+            this.OperationTime.HeaderText = "Затрачено времени";
+            this.OperationTime.Name = "OperationTime";
+            this.OperationTime.ReadOnly = true;
+            // 
+            // TypeOfCrossingover
+            // 
+            this.TypeOfCrossingover.HeaderText = "Тип кроссинговера";
+            this.TypeOfCrossingover.Name = "TypeOfCrossingover";
+            this.TypeOfCrossingover.ReadOnly = true;
+            this.TypeOfCrossingover.Width = 140;
+            // 
+            // TypeOfMutation
+            // 
+            this.TypeOfMutation.HeaderText = "Тип мутации";
+            this.TypeOfMutation.Name = "TypeOfMutation";
+            this.TypeOfMutation.ReadOnly = true;
+            this.TypeOfMutation.Width = 140;
+            // 
+            // TypeOfSelection
+            // 
+            this.TypeOfSelection.HeaderText = "Тип селекции";
+            this.TypeOfSelection.Name = "TypeOfSelection";
+            this.TypeOfSelection.ReadOnly = true;
+            this.TypeOfSelection.Width = 140;
+            // 
+            // TypeOfFitness
+            // 
+            this.TypeOfFitness.HeaderText = "Тип фитнес-функции";
+            this.TypeOfFitness.Name = "TypeOfFitness";
+            this.TypeOfFitness.ReadOnly = true;
+            this.TypeOfFitness.Width = 140;
+            // 
+            // NumberOfGenerations
+            // 
+            this.NumberOfGenerations.HeaderText = "Количество покалений";
+            this.NumberOfGenerations.Name = "NumberOfGenerations";
+            this.NumberOfGenerations.ReadOnly = true;
+            this.NumberOfGenerations.Width = 80;
+            // 
+            // BestResult
+            // 
+            this.BestResult.HeaderText = "Лучший результат";
+            this.BestResult.Name = "BestResult";
+            this.BestResult.ReadOnly = true;
+            this.BestResult.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.BestResult.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.BestResult.Width = 80;
+            // 
+            // Id
+            // 
+            this.Id.HeaderText = "Id";
+            this.Id.Name = "Id";
+            this.Id.ReadOnly = true;
+            this.Id.Visible = false;
+            // 
             // MainMenuStrip
             // 
             this.MainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1213,75 +1284,6 @@
             // 
             this.SaveFileDialog.DefaultExt = "xml";
             // 
-            // StartTime
-            // 
-            this.StartTime.HeaderText = "Начало";
-            this.StartTime.Name = "StartTime";
-            this.StartTime.ReadOnly = true;
-            // 
-            // EndTime
-            // 
-            this.EndTime.HeaderText = "Конец";
-            this.EndTime.Name = "EndTime";
-            this.EndTime.ReadOnly = true;
-            // 
-            // OperationTime
-            // 
-            this.OperationTime.HeaderText = "Затрачено времени";
-            this.OperationTime.Name = "OperationTime";
-            this.OperationTime.ReadOnly = true;
-            // 
-            // TypeOfCrossingover
-            // 
-            this.TypeOfCrossingover.HeaderText = "Тип кроссинговера";
-            this.TypeOfCrossingover.Name = "TypeOfCrossingover";
-            this.TypeOfCrossingover.ReadOnly = true;
-            this.TypeOfCrossingover.Width = 140;
-            // 
-            // TypeOfMutation
-            // 
-            this.TypeOfMutation.HeaderText = "Тип мутации";
-            this.TypeOfMutation.Name = "TypeOfMutation";
-            this.TypeOfMutation.ReadOnly = true;
-            this.TypeOfMutation.Width = 140;
-            // 
-            // TypeOfSelection
-            // 
-            this.TypeOfSelection.HeaderText = "Тип селекции";
-            this.TypeOfSelection.Name = "TypeOfSelection";
-            this.TypeOfSelection.ReadOnly = true;
-            this.TypeOfSelection.Width = 140;
-            // 
-            // TypeOfFitness
-            // 
-            this.TypeOfFitness.HeaderText = "Тип фитнес-функции";
-            this.TypeOfFitness.Name = "TypeOfFitness";
-            this.TypeOfFitness.ReadOnly = true;
-            this.TypeOfFitness.Width = 140;
-            // 
-            // NumberOfGenerations
-            // 
-            this.NumberOfGenerations.HeaderText = "Количество покалений";
-            this.NumberOfGenerations.Name = "NumberOfGenerations";
-            this.NumberOfGenerations.ReadOnly = true;
-            this.NumberOfGenerations.Width = 80;
-            // 
-            // BestResult
-            // 
-            this.BestResult.HeaderText = "Лучший результат";
-            this.BestResult.Name = "BestResult";
-            this.BestResult.ReadOnly = true;
-            this.BestResult.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.BestResult.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.BestResult.Width = 80;
-            // 
-            // Id
-            // 
-            this.Id.HeaderText = "Id";
-            this.Id.Name = "Id";
-            this.Id.ReadOnly = true;
-            this.Id.Visible = false;
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1302,7 +1304,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.RibsDataGridView)).EndInit();
             this.GraphicGraphGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.GraphPictureBox)).EndInit();
-            this.PersonSettingsTabPage.ResumeLayout(false);
+            this.PersonsTabPage.ResumeLayout(false);
             this.PersonsGroupBox.ResumeLayout(false);
             this.PersonsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PersonsDataGridView)).EndInit();
@@ -1403,7 +1405,7 @@
         private System.Windows.Forms.ToolStripProgressBar WProgressBar;
         private System.Windows.Forms.ToolStripStatusLabel WorkToolStripStatusLabel;
         private System.Windows.Forms.Button SaveAlgorithmButton;
-        private System.Windows.Forms.TabPage PersonSettingsTabPage;
+        private System.Windows.Forms.TabPage PersonsTabPage;
         private System.Windows.Forms.DataGridView PersonsDataGridView;
         private System.Windows.Forms.GroupBox GraphViewGroupBox;
         private System.Windows.Forms.PictureBox GraphViewPictureBox;
