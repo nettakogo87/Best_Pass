@@ -13,7 +13,11 @@ namespace Best_Pass.BusinessLayer
 {
     public class Configuration
     {
-        public int AlgMode { set; get; }
+        public enum AlgorithmMode
+        {
+            Search, Quality, Singl
+        };
+        public AlgorithmMode AlgMode { set; get; }
         public string ConfigName { set; get; }
         public IGraph Graph { set; get; }
         public AbstractTrack[] Tracks { set; get; }
@@ -25,18 +29,28 @@ namespace Best_Pass.BusinessLayer
         public int ProbOfCrossingover { set; get; }
         public int ProbOfMutation { set; get; }
         public int CountOfReplays { set; get; }
+        public List<string> AliasMutations { set; get; }
+        public List<string> AliasSelection { set; get; }
+        public List<string> AliasCrossingover { set; get; }
 
         public Configuration()
         {
+            AliasCrossingover = new List<string>();
+            AliasMutations = new List<string>();
+            AliasSelection = new List<string>();
+
             ConfigName = "Новая конфигурация";
-            AlgMode = (int)MainController.AlgorithmMode.Singl;
+            AlgMode = AlgorithmMode.Singl;
             CountOfReplays = 1;
             ProbOfCrossingover = 100;
             ProbOfMutation = 100;
             FitnessParam = 10;
             Mutation = new NotRandomMutation();
+            AliasMutations.Add(Mutation.GetName());
             Crossingover = new CyclicalCrossingover();
+            AliasCrossingover.Add(Crossingover.GetName());
             Selection = new TournamentSelection();
+            AliasSelection.Add(Selection.GetName());
             Graph = new UndirectedConnectedGraph(10);
             FitnessFunction = new BestReps((int)FitnessParam);
             Tracks = new AbstractTrack[10];
