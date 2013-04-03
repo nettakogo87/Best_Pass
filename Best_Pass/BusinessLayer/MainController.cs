@@ -35,12 +35,17 @@ namespace Best_Pass.BusinessLayer
         private Random _r = new Random();
         public DB_GeneticsDataSet GeneticsDataSet { get; private set; }
         public DB_GeneticsDataSetTableAdapters.LaunchesTableAdapter LaunchTableAdapter { get; private set; }
+        public DB_GeneticsDataSetTableAdapters.PersonsTableAdapter PersonsTableAdapter { get; private set; }
         public UserSettings UserSettings { get; private set; }
+        private Thread _threadRunGA;
 
         public MainController()
         {
             _newConfig = new Configuration();
             UserSettings = new UserSettings();
+            GeneticsDataSet = new DB_GeneticsDataSet();
+            LaunchTableAdapter = new DB_GeneticsDataSetTableAdapters.LaunchesTableAdapter();
+            PersonsTableAdapter = new DB_GeneticsDataSetTableAdapters.PersonsTableAdapter();
         }
 
         public void CreateGraph(int points, int  scopeStart, int scopeEnd)
@@ -370,14 +375,57 @@ namespace Best_Pass.BusinessLayer
                 tracks[i] = _newConfig.Tracks[i].Clone();
             }
             _newGA = new GEngine(tracks, _newConfig.ProbOfCrossingover, _newConfig.ProbOfMutation, _newConfig.FitnessFunction, _newConfig.Mutation, _newConfig.Crossingover, _newConfig.Selection);
-            _newGA.Run();
+            _threadRunGA = new Thread(_newGA.Run);
+            _threadRunGA.Name ="LaborOfGA";
+            try
+            {
+                _threadRunGA.Start();
+            }
+            catch (ThreadAbortException)
+            {
+                CleaningDB();
+            }
         }
 
-        public void LoadTableOfLaunch()
+        public void StopGA()
         {
-            GeneticsDataSet = new DB_GeneticsDataSet();
-            LaunchTableAdapter = new DB_GeneticsDataSetTableAdapters.LaunchesTableAdapter();
+            _threadRunGA.Abort();
+            CleaningDB();
+        }
+
+        public bool InspectGA()
+        {
+            return ThreadState.Stopped == _threadRunGA.ThreadState;
+        }
+
+        private void CleaningDB()
+        {
+            LoadGeneticsDataSet();
+            for (int i = 0; i < GeneticsDataSet.Launches.Count; i++)
+            {
+                DB_GeneticsDataSet.LaunchesRow lr = GeneticsDataSet.Launches[i];
+                if (lr.Id == _newGA.GetLaunchId())
+                {
+                    lr.Delete();
+                    LaunchTableAdapter.Update(lr);
+                    GeneticsDataSet.Launches.AcceptChanges();
+                    break;
+                }
+            }
+        }
+
+        public void LoadGeneticsDataSet()
+        {
             LaunchTableAdapter.Fill(GeneticsDataSet.Launches);
+            PersonsTableAdapter.Fill(GeneticsDataSet.Persons);
+        }
+
+        public void DeleteRowFromTableOfLaunch(int index)
+        {
+            DB_GeneticsDataSet.LaunchesRow lr = GeneticsDataSet.Launches[index];
+            lr.Delete();
+            LaunchTableAdapter.Update(lr);
+            GeneticsDataSet.Launches.AcceptChanges();
         }
     }
 }
