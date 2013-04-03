@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.SettingsTabControl = new System.Windows.Forms.TabControl();
@@ -117,6 +118,20 @@
             this.DetailMutButton = new System.Windows.Forms.Button();
             this.DetailCrossButton = new System.Windows.Forms.Button();
             this.TableOfLaunchDataGridView = new System.Windows.Forms.DataGridView();
+            this.MainMenuStrip = new System.Windows.Forms.MenuStrip();
+            this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CreateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.WorkStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.WProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.WorkToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.WorkTimer = new System.Windows.Forms.Timer(this.components);
             this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.OperationTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -126,19 +141,7 @@
             this.TypeOfFitness = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NumberOfGenerations = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BestResult = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MainMenuStrip = new System.Windows.Forms.MenuStrip();
-            this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CreateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.LoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.WorkStatusStrip = new System.Windows.Forms.StatusStrip();
-            this.WorkToolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
-            this.WorkToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.OptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SettingsTabControl.SuspendLayout();
             this.GraphTabPage.SuspendLayout();
             this.ControlGraphGroupBox.SuspendLayout();
@@ -940,11 +943,12 @@
             // 
             // StopButton
             // 
+            this.StopButton.Enabled = false;
             this.StopButton.Location = new System.Drawing.Point(551, 215);
             this.StopButton.Name = "StopButton";
             this.StopButton.Size = new System.Drawing.Size(155, 23);
             this.StopButton.TabIndex = 4;
-            this.StopButton.Text = "Стоп";
+            this.StopButton.Text = "Прервать";
             this.StopButton.UseVisualStyleBackColor = true;
             this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
@@ -1054,6 +1058,7 @@
             this.DeleteLaunchButton.TabIndex = 5;
             this.DeleteLaunchButton.Text = "Удалить запись";
             this.DeleteLaunchButton.UseVisualStyleBackColor = true;
+            this.DeleteLaunchButton.Click += new System.EventHandler(this.DeleteLaunchButton_Click);
             // 
             // DetailPersonsButton
             // 
@@ -1061,8 +1066,9 @@
             this.DetailPersonsButton.Name = "DetailPersonsButton";
             this.DetailPersonsButton.Size = new System.Drawing.Size(113, 23);
             this.DetailPersonsButton.TabIndex = 4;
-            this.DetailPersonsButton.Text = "Дерево покалений";
+            this.DetailPersonsButton.Text = "Дерево поколений";
             this.DetailPersonsButton.UseVisualStyleBackColor = true;
+            this.DetailPersonsButton.Click += new System.EventHandler(this.DetailPersonsButton_Click);
             // 
             // DetailSelectButton
             // 
@@ -1105,13 +1111,107 @@
             this.TypeOfSelection,
             this.TypeOfFitness,
             this.NumberOfGenerations,
-            this.BestResult});
+            this.BestResult,
+            this.Id});
             this.TableOfLaunchDataGridView.Location = new System.Drawing.Point(6, 19);
             this.TableOfLaunchDataGridView.Name = "TableOfLaunchDataGridView";
             this.TableOfLaunchDataGridView.ReadOnly = true;
             this.TableOfLaunchDataGridView.RowHeadersVisible = false;
+            this.TableOfLaunchDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.TableOfLaunchDataGridView.Size = new System.Drawing.Size(880, 365);
             this.TableOfLaunchDataGridView.TabIndex = 0;
+            // 
+            // MainMenuStrip
+            // 
+            this.MainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.файлToolStripMenuItem,
+            this.OptionsToolStripMenuItem});
+            this.MainMenuStrip.Location = new System.Drawing.Point(0, 0);
+            this.MainMenuStrip.Name = "MainMenuStrip";
+            this.MainMenuStrip.Size = new System.Drawing.Size(936, 25);
+            this.MainMenuStrip.TabIndex = 1;
+            this.MainMenuStrip.Text = "menuStrip1";
+            // 
+            // файлToolStripMenuItem
+            // 
+            this.файлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CreateToolStripMenuItem,
+            this.SaveToolStripMenuItem,
+            this.LoadToolStripMenuItem,
+            this.ExitToolStripMenuItem});
+            this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
+            this.файлToolStripMenuItem.Size = new System.Drawing.Size(50, 21);
+            this.файлToolStripMenuItem.Text = "Файл";
+            // 
+            // CreateToolStripMenuItem
+            // 
+            this.CreateToolStripMenuItem.Name = "CreateToolStripMenuItem";
+            this.CreateToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.CreateToolStripMenuItem.Text = "Создать";
+            // 
+            // SaveToolStripMenuItem
+            // 
+            this.SaveToolStripMenuItem.Name = "SaveToolStripMenuItem";
+            this.SaveToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.SaveToolStripMenuItem.Text = "Сохранить";
+            // 
+            // LoadToolStripMenuItem
+            // 
+            this.LoadToolStripMenuItem.Name = "LoadToolStripMenuItem";
+            this.LoadToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.LoadToolStripMenuItem.Text = "Загрузить";
+            // 
+            // ExitToolStripMenuItem
+            // 
+            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.ExitToolStripMenuItem.Text = "Выход";
+            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
+            // 
+            // OptionsToolStripMenuItem
+            // 
+            this.OptionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SettingsToolStripMenuItem});
+            this.OptionsToolStripMenuItem.Name = "OptionsToolStripMenuItem";
+            this.OptionsToolStripMenuItem.Size = new System.Drawing.Size(58, 21);
+            this.OptionsToolStripMenuItem.Text = "Опции";
+            // 
+            // SettingsToolStripMenuItem
+            // 
+            this.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
+            this.SettingsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.SettingsToolStripMenuItem.Text = "Настройки";
+            this.SettingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
+            // 
+            // WorkStatusStrip
+            // 
+            this.WorkStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.WProgressBar,
+            this.WorkToolStripStatusLabel});
+            this.WorkStatusStrip.Location = new System.Drawing.Point(0, 499);
+            this.WorkStatusStrip.Name = "WorkStatusStrip";
+            this.WorkStatusStrip.Size = new System.Drawing.Size(936, 22);
+            this.WorkStatusStrip.TabIndex = 2;
+            this.WorkStatusStrip.Text = "Ожидание запуска";
+            // 
+            // WProgressBar
+            // 
+            this.WProgressBar.Name = "WProgressBar";
+            this.WProgressBar.Size = new System.Drawing.Size(100, 16);
+            // 
+            // WorkToolStripStatusLabel
+            // 
+            this.WorkToolStripStatusLabel.Name = "WorkToolStripStatusLabel";
+            this.WorkToolStripStatusLabel.Size = new System.Drawing.Size(118, 17);
+            this.WorkToolStripStatusLabel.Text = "Ожидание запуска";
+            // 
+            // OpenFileDialog
+            // 
+            this.OpenFileDialog.FileName = "openFileDialog1";
+            // 
+            // SaveFileDialog
+            // 
+            this.SaveFileDialog.DefaultExt = "xml";
             // 
             // StartTime
             // 
@@ -1175,99 +1275,12 @@
             this.BestResult.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.BestResult.Width = 80;
             // 
-            // MainMenuStrip
+            // Id
             // 
-            this.MainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.файлToolStripMenuItem,
-            this.OptionsToolStripMenuItem});
-            this.MainMenuStrip.Location = new System.Drawing.Point(0, 0);
-            this.MainMenuStrip.Name = "MainMenuStrip";
-            this.MainMenuStrip.Size = new System.Drawing.Size(936, 25);
-            this.MainMenuStrip.TabIndex = 1;
-            this.MainMenuStrip.Text = "menuStrip1";
-            // 
-            // файлToolStripMenuItem
-            // 
-            this.файлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CreateToolStripMenuItem,
-            this.SaveToolStripMenuItem,
-            this.LoadToolStripMenuItem,
-            this.ExitToolStripMenuItem});
-            this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
-            this.файлToolStripMenuItem.Size = new System.Drawing.Size(50, 21);
-            this.файлToolStripMenuItem.Text = "Файл";
-            // 
-            // CreateToolStripMenuItem
-            // 
-            this.CreateToolStripMenuItem.Name = "CreateToolStripMenuItem";
-            this.CreateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.CreateToolStripMenuItem.Text = "Создать";
-            // 
-            // SaveToolStripMenuItem
-            // 
-            this.SaveToolStripMenuItem.Name = "SaveToolStripMenuItem";
-            this.SaveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.SaveToolStripMenuItem.Text = "Сохранить";
-            // 
-            // LoadToolStripMenuItem
-            // 
-            this.LoadToolStripMenuItem.Name = "LoadToolStripMenuItem";
-            this.LoadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.LoadToolStripMenuItem.Text = "Загрузить";
-            // 
-            // ExitToolStripMenuItem
-            // 
-            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.ExitToolStripMenuItem.Text = "Выход";
-            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
-            // 
-            // WorkStatusStrip
-            // 
-            this.WorkStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.WorkToolStripProgressBar,
-            this.WorkToolStripStatusLabel});
-            this.WorkStatusStrip.Location = new System.Drawing.Point(0, 499);
-            this.WorkStatusStrip.Name = "WorkStatusStrip";
-            this.WorkStatusStrip.Size = new System.Drawing.Size(936, 22);
-            this.WorkStatusStrip.TabIndex = 2;
-            this.WorkStatusStrip.Text = "statusStrip1";
-            // 
-            // WorkToolStripProgressBar
-            // 
-            this.WorkToolStripProgressBar.Enabled = false;
-            this.WorkToolStripProgressBar.Name = "WorkToolStripProgressBar";
-            this.WorkToolStripProgressBar.Size = new System.Drawing.Size(100, 16);
-            // 
-            // WorkToolStripStatusLabel
-            // 
-            this.WorkToolStripStatusLabel.Enabled = false;
-            this.WorkToolStripStatusLabel.Name = "WorkToolStripStatusLabel";
-            this.WorkToolStripStatusLabel.Size = new System.Drawing.Size(131, 17);
-            this.WorkToolStripStatusLabel.Text = "toolStripStatusLabel1";
-            // 
-            // OpenFileDialog
-            // 
-            this.OpenFileDialog.FileName = "openFileDialog1";
-            // 
-            // SaveFileDialog
-            // 
-            this.SaveFileDialog.DefaultExt = "xml";
-            // 
-            // OptionsToolStripMenuItem
-            // 
-            this.OptionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.SettingsToolStripMenuItem});
-            this.OptionsToolStripMenuItem.Name = "OptionsToolStripMenuItem";
-            this.OptionsToolStripMenuItem.Size = new System.Drawing.Size(58, 21);
-            this.OptionsToolStripMenuItem.Text = "Опции";
-            // 
-            // SettingsToolStripMenuItem
-            // 
-            this.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
-            this.SettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.SettingsToolStripMenuItem.Text = "Настройки";
-            this.SettingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
+            this.Id.HeaderText = "Id";
+            this.Id.Name = "Id";
+            this.Id.ReadOnly = true;
+            this.Id.Visible = false;
             // 
             // MainWindow
             // 
@@ -1387,7 +1400,7 @@
         private System.Windows.Forms.Button AddConfigButton;
         private System.Windows.Forms.DataGridView ConfigAlgDataGridView;
         private System.Windows.Forms.StatusStrip WorkStatusStrip;
-        private System.Windows.Forms.ToolStripProgressBar WorkToolStripProgressBar;
+        private System.Windows.Forms.ToolStripProgressBar WProgressBar;
         private System.Windows.Forms.ToolStripStatusLabel WorkToolStripStatusLabel;
         private System.Windows.Forms.Button SaveAlgorithmButton;
         private System.Windows.Forms.TabPage PersonSettingsTabPage;
@@ -1423,6 +1436,9 @@
         private System.Windows.Forms.Button DetailSelectButton;
         private System.Windows.Forms.Button DetailMutButton;
         private System.Windows.Forms.Label DetailLabel;
+        private System.Windows.Forms.ToolStripMenuItem OptionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SettingsToolStripMenuItem;
+        private System.Windows.Forms.Timer WorkTimer;
         private System.Windows.Forms.DataGridViewTextBoxColumn StartTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn EndTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn OperationTime;
@@ -1432,8 +1448,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn TypeOfFitness;
         private System.Windows.Forms.DataGridViewTextBoxColumn NumberOfGenerations;
         private System.Windows.Forms.DataGridViewTextBoxColumn BestResult;
-        private System.Windows.Forms.ToolStripMenuItem OptionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem SettingsToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Id;
     }
 }
 

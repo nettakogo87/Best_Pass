@@ -23,12 +23,18 @@ namespace Best_Pass.PresentationLayer
         private int _points;
         private Microsoft.Glee.GraphViewerGdi.GViewer _viewer;
         private MainController _mainController;
+        Timer _wTimer;
 
         public MainWindow()
         {
-            _viewer = new Microsoft.Glee.GraphViewerGdi.GViewer();
             InitializeComponent();
+
+            _wTimer = new Timer();
+            _wTimer.Interval = 500;
+            _wTimer.Tick += new EventHandler(wTimer_Tick);
+
             _mainController = new MainController();
+            _viewer = new Microsoft.Glee.GraphViewerGdi.GViewer();
             RenderDataGridGraph();
 //            RenderViewGraph();
             RenderDataGridPersons();
@@ -238,6 +244,9 @@ namespace Best_Pass.PresentationLayer
 
             GraphViewPictureBox.Height = this.Height - 163;
             GraphViewPictureBox.Width = this.Width - 522;
+
+            TableOfLaunchgGroupBox.Width = this.Width - 60;
+            TableOfLaunchDataGridView.Width = this.Width - 72;
         }
 
         private void SaveGraphButton_Click(object sender, EventArgs e)
@@ -813,8 +822,44 @@ namespace Best_Pass.PresentationLayer
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            WorkToolStripProgressBar.Value = 5;
+            StartButton.Enabled = false;
+            StopButton.Enabled = true;
+            WorkToolStripStatusLabel.Text = "Выполнение";
+
             _mainController.StartGA();
+            _wTimer.Start();
+
+        }
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {
+            _mainController.StopGA();
+            StopWorkingPrepare();
+        }
+
+        private void wTimer_Tick(object sender, EventArgs e)
+        {
+            if (!_mainController.InspectGA())
+            {
+                if (WProgressBar.Maximum == WProgressBar.Value)
+                {
+                    WProgressBar.Value = 0;
+                }
+                WProgressBar.PerformStep();
+            }
+            else
+            {
+                StopWorkingPrepare();
+            }
+        }
+
+        private void StopWorkingPrepare()
+        {
+            _wTimer.Stop();
+            WProgressBar.Value = 0;
+            WorkToolStripStatusLabel.Text = "Ожидание запуска";
+            StartButton.Enabled = true;
+            StopButton.Enabled = false;
             RenderTableOfLaunch();
         }
 
@@ -864,11 +909,6 @@ namespace Best_Pass.PresentationLayer
             RenderLaunchMode();
         }
 
-        private void StopButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void PersonsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             PersonsDataGridView[e.ColumnIndex, e.RowIndex].ErrorText =
@@ -883,14 +923,14 @@ namespace Best_Pass.PresentationLayer
 
         private void RenderTableOfLaunch()
         {
-            _mainController.LoadTableOfLaunch();
+            _mainController.LoadGeneticsDataSet();
             TableOfLaunchDataGridView.Rows.Clear();
             for (int i = 0; i < _mainController.GeneticsDataSet.Launches.Rows.Count; i++)
             {
                 DB_GeneticsDataSet.LaunchesRow lr = _mainController.GeneticsDataSet.Launches[i];
                 TableOfLaunchDataGridView.Rows.Add(lr.StartTime, lr.EndTime, lr.OperationTime, lr.TypeOfCrossingover,
                                                    lr.TypeOfMutation, lr.TypeOfSelection, lr.FitnessFunction,
-                                                   lr.NumberOfGenerations, lr.BestResult);
+                                                   lr.NumberOfGenerations, lr.BestResult, lr.Id);
             }
             
         }
@@ -900,6 +940,32 @@ namespace Best_Pass.PresentationLayer
             SettingsWindow settingsWindow = new SettingsWindow(_mainController.UserSettings);
             settingsWindow.ShowDialog();
             RenderTableOfLaunch();
+        }
+
+        private void DeleteLaunchButton_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < TableOfLaunchDataGridView.Rows.Count; i++)
+            {
+                if (TableOfLaunchDataGridView.Rows[i].Selected)
+                {
+                    _mainController.DeleteRowFromTableOfLaunch(i);
+                }
+            }
+            RenderTableOfLaunch();
+        }
+
+        private void DetailPersonsButton_Click(object sender, EventArgs e)
+        {
+            Guid id = _mainController.GeneticsDataSet.Launches[0].Id;
+            for (int i = 0; i < TableOfLaunchDataGridView.Rows.Count; i++)
+            {
+                if (TableOfLaunchDataGridView.Rows[i].Selected)
+                {
+                    id = new Guid(TableOfLaunchDataGridView[9, i].Value.ToString());
+                }
+            }
+            PersonsWindow personsWindow = new PersonsWindow(_mainController.GeneticsDataSet, id);
+            personsWindow.Show();
         }
     }
 }
