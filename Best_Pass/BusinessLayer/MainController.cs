@@ -22,10 +22,6 @@ namespace Best_Pass.BusinessLayer
 {
     public class MainController
     {
-        public enum AlgorithmMode
-        {
-            Search, Quality, Singl
-        };
         public enum TrackType
         {
             ClosedTrack, UnclosedTrack
@@ -38,6 +34,9 @@ namespace Best_Pass.BusinessLayer
         public DB_GeneticsDataSetTableAdapters.PersonsTableAdapter PersonsTableAdapter { get; private set; }
         public UserSettings UserSettings { get; private set; }
         private Thread _threadRunGA;
+        private static MutationFactory _mutationFactory;
+        private static SelectionFactory _selectionFactory;
+        private static CrossingoverFactory _crossingoverFactory;
 
         public MainController()
         {
@@ -46,6 +45,10 @@ namespace Best_Pass.BusinessLayer
             GeneticsDataSet = new DB_GeneticsDataSet();
             LaunchTableAdapter = new DB_GeneticsDataSetTableAdapters.LaunchesTableAdapter();
             PersonsTableAdapter = new DB_GeneticsDataSetTableAdapters.PersonsTableAdapter();
+
+            _mutationFactory = new MutationFactory();
+            _selectionFactory = new SelectionFactory();
+            _crossingoverFactory = new CrossingoverFactory();
         }
 
         public void CreateGraph(int points, int  scopeStart, int scopeEnd)
@@ -166,60 +169,60 @@ namespace Best_Pass.BusinessLayer
             return _newConfig.Tracks;
         }
 
-        public void CreateMutation(AlgorithmMode algorithmMode, string[] aliasMutations)
+        public void CreateMutation(Configuration.AlgorithmMode algorithmMode, List<string> aliasMutations)
         {
-            MutationFactory mutationFactory = new MutationFactory();
-            if (AlgorithmMode.Singl == algorithmMode)
+            _newConfig.AliasMutations = aliasMutations;
+            if (Configuration.AlgorithmMode.Singl == algorithmMode)
             {
-                _newConfig.Mutation = mutationFactory.CreateMutation(aliasMutations[0]);
+                _newConfig.Mutation = _mutationFactory.CreateMutation(aliasMutations[0]);
             }
-            if (AlgorithmMode.Quality == algorithmMode)
+            if (Configuration.AlgorithmMode.Quality == algorithmMode)
             {
-                List<ProxyMutation> proxyMutationList = GetProxyMutationList(aliasMutations);
-                _newConfig.Mutation = mutationFactory.CreateMutation("QualityCountsMutation", proxyMutationList, 0);
+                List<ProxyMutation> proxyMutationList = GetProxyMutationList(aliasMutations.ToArray());
+                _newConfig.Mutation = _mutationFactory.CreateMutation("QualityCountsMutation", proxyMutationList, 0);
             }
-            if (AlgorithmMode.Search == algorithmMode)
+            if (Configuration.AlgorithmMode.Search == algorithmMode)
             {
-                List<ProxyMutation> proxyMutationList = GetProxyMutationList(aliasMutations);
-                _newConfig.Mutation = mutationFactory.CreateMutation("SearchBestMutation", proxyMutationList, 0);
+                List<ProxyMutation> proxyMutationList = GetProxyMutationList(aliasMutations.ToArray());
+                _newConfig.Mutation = _mutationFactory.CreateMutation("SearchBestMutation", proxyMutationList, 0);
             }
         }
 
-        public void CreateSelection(AlgorithmMode algorithmMode, string[] aliasSelection)
+        public void CreateSelection(Configuration.AlgorithmMode algorithmMode, List<string> aliasSelection)
         {
-            SelectionFactory selectionFactory = new SelectionFactory();
-            if (AlgorithmMode.Singl == algorithmMode)
+            _newConfig.AliasSelection = aliasSelection;
+            if (Configuration.AlgorithmMode.Singl == algorithmMode)
             {
-                _newConfig.Selection = selectionFactory.CreateSelection(aliasSelection[0]);
+                _newConfig.Selection = _selectionFactory.CreateSelection(aliasSelection[0]);
             }
-            if (AlgorithmMode.Quality == algorithmMode)
+            if (Configuration.AlgorithmMode.Quality == algorithmMode)
             {
-                List<ProxySelection> proxySelectionList = GetProxySelectionList(aliasSelection);
-                _newConfig.Selection = selectionFactory.CreateSelection("QualityCountsSelection", proxySelectionList);
+                List<ProxySelection> proxySelectionList = GetProxySelectionList(aliasSelection.ToArray());
+                _newConfig.Selection = _selectionFactory.CreateSelection("QualityCountsSelection", proxySelectionList);
             }
-            if (AlgorithmMode.Search == algorithmMode)
+            if (Configuration.AlgorithmMode.Search == algorithmMode)
             {
-                List<ProxySelection> proxySelectionList = GetProxySelectionList(aliasSelection);
-                _newConfig.Selection = selectionFactory.CreateSelection("SearchBestSelection", proxySelectionList);
+                List<ProxySelection> proxySelectionList = GetProxySelectionList(aliasSelection.ToArray());
+                _newConfig.Selection = _selectionFactory.CreateSelection("SearchBestSelection", proxySelectionList);
             }
         }
 
-        public void CreateCrossingover(AlgorithmMode algorithmMode, string[] aliasCrossingover)
+        public void CreateCrossingover(Configuration.AlgorithmMode algorithmMode, List<string> aliasCrossingover)
         {
-            CrossingoverFactory crossingoverFactory = new CrossingoverFactory();
-            if (AlgorithmMode.Singl == algorithmMode)
+            _newConfig.AliasCrossingover = aliasCrossingover;
+            if (Configuration.AlgorithmMode.Singl == algorithmMode)
             {
-                _newConfig.Crossingover = crossingoverFactory.CreateCrossingover(aliasCrossingover[0]);
+                _newConfig.Crossingover = _crossingoverFactory.CreateCrossingover(aliasCrossingover[0]);
             }
-            if (AlgorithmMode.Quality == algorithmMode)
+            if (Configuration.AlgorithmMode.Quality == algorithmMode)
             {
-                List<ProxyCrossingover> proxyCrossingoverList = GetProxyCrossingoverList(aliasCrossingover);
-                _newConfig.Crossingover = crossingoverFactory.CreateCrossingover("QualityCountsCrossingover", proxyCrossingoverList, 0);
+                List<ProxyCrossingover> proxyCrossingoverList = GetProxyCrossingoverList(aliasCrossingover.ToArray());
+                _newConfig.Crossingover = _crossingoverFactory.CreateCrossingover("QualityCountsCrossingover", proxyCrossingoverList, 0);
             }
-            if (AlgorithmMode.Search == algorithmMode)
+            if (Configuration.AlgorithmMode.Search == algorithmMode)
             {
-                List<ProxyCrossingover> proxyCrossingoverList = GetProxyCrossingoverList(aliasCrossingover);
-                _newConfig.Crossingover = crossingoverFactory.CreateCrossingover("SearchBestCrossingover", proxyCrossingoverList, 0);
+                List<ProxyCrossingover> proxyCrossingoverList = GetProxyCrossingoverList(aliasCrossingover.ToArray());
+                _newConfig.Crossingover = _crossingoverFactory.CreateCrossingover("SearchBestCrossingover", proxyCrossingoverList, 0);
             }
         }
 
@@ -238,20 +241,17 @@ namespace Best_Pass.BusinessLayer
 
         private static List<ProxyMutation> GetProxyMutationList(string[] aliasMutations)
         {
-            MutationFactory mutationFactory = new MutationFactory();
-            return aliasMutations.Select(t => new ProxyMutation(mutationFactory.CreateMutation(t))).ToList();
+            return aliasMutations.Select(t => new ProxyMutation(_mutationFactory.CreateMutation(t))).ToList();
         }
 
         private static List<ProxySelection> GetProxySelectionList(string[] aliasSelection)
         {
-            SelectionFactory selectionFactory = new SelectionFactory();
-            return aliasSelection.Select(t => new ProxySelection(selectionFactory.CreateSelection(t))).ToList();
+            return aliasSelection.Select(t => new ProxySelection(_selectionFactory.CreateSelection(t))).ToList();
         }
 
         private static List<ProxyCrossingover> GetProxyCrossingoverList(string[] aliasCrossingover)
         {
-            CrossingoverFactory crossingoverFactory = new CrossingoverFactory();
-            return aliasCrossingover.Select(t => new ProxyCrossingover(crossingoverFactory.CreateCrossingover(t))).ToList();
+            return aliasCrossingover.Select(t => new ProxyCrossingover(_crossingoverFactory.CreateCrossingover(t))).ToList();
         }
 
         public Configuration GetConfig()
@@ -266,7 +266,7 @@ namespace Best_Pass.BusinessLayer
 
             sw.WriteLine(_newConfig.ConfigName);
             sw.WriteLine(_newConfig.CountOfReplays);
-            sw.WriteLine(_newConfig.AlgMode);
+            sw.WriteLine((int)_newConfig.AlgMode);
             sw.WriteLine();
             sw.WriteLine(_newConfig.Graph.CountOfRibs);
             sw.WriteLine(_newConfig.Graph.CountOfNode);
@@ -274,7 +274,7 @@ namespace Best_Pass.BusinessLayer
             {
                 for (int j = i + 1; j < _newConfig.Graph.CountOfNode; j++)
                 {
-                    sw.WriteLine(_newConfig.Graph.GetRibByNodes(i, j));
+                    sw.WriteLine(_newConfig.Graph.GetRibByNodes(i, j).Weight);
                 }
             }
             sw.WriteLine();
@@ -291,9 +291,30 @@ namespace Best_Pass.BusinessLayer
             sw.WriteLine(_newConfig.FitnessFunction.GetName());
             sw.WriteLine(_newConfig.FitnessParam);
             sw.WriteLine();
-            sw.WriteLine(_newConfig.Mutation.GetName());
-            sw.WriteLine(_newConfig.Selection.GetName());
-            sw.WriteLine(_newConfig.Crossingover.GetName());
+            if (_newConfig.AlgMode == Configuration.AlgorithmMode.Singl)
+            {
+                sw.WriteLine(_newConfig.Mutation.GetName());
+                sw.WriteLine(_newConfig.Selection.GetName());
+                sw.WriteLine(_newConfig.Crossingover.GetName());
+            }
+            if (_newConfig.AlgMode == Configuration.AlgorithmMode.Quality || _newConfig.AlgMode == Configuration.AlgorithmMode.Search)
+            {
+                sw.WriteLine(_newConfig.AliasMutations.Count);
+                foreach (string t in _newConfig.AliasMutations)
+                {
+                    sw.WriteLine(t);
+                }
+                sw.WriteLine(_newConfig.AliasSelection.Count);
+                foreach (string t in _newConfig.AliasSelection)
+                {
+                    sw.WriteLine(t);
+                }
+                sw.WriteLine(_newConfig.AliasCrossingover.Count);
+                foreach (string t in _newConfig.AliasCrossingover)
+                {
+                    sw.WriteLine(t);
+                }
+            }
             sw.WriteLine();
             sw.WriteLine(_newConfig.ProbOfMutation);
             sw.WriteLine(_newConfig.ProbOfCrossingover);
@@ -306,12 +327,13 @@ namespace Best_Pass.BusinessLayer
             StreamReader sr = newConfigurationFile.OpenText();
             _newConfig.ConfigName = sr.ReadLine();
             _newConfig.CountOfReplays = Convert.ToInt16(sr.ReadLine());
-            _newConfig.AlgMode = Convert.ToInt16(sr.ReadLine());
+            _newConfig.AlgMode = (Configuration.AlgorithmMode)Convert.ToInt16(sr.ReadLine());
             sr.ReadLine();
             int countOfRibs = Convert.ToInt16(sr.ReadLine());
             int countOfNode = Convert.ToInt16(sr.ReadLine());
-            double[] weight = new double[_newConfig.Graph.CountOfRibs];
-            for (int i = 0; i < _newConfig.Graph.CountOfRibs; i++)
+
+            double[] weight = new double[countOfRibs];
+            for (int i = 0; i < countOfRibs; i++)
             {
                 weight[i] = Convert.ToDouble(sr.ReadLine());
             }
@@ -352,23 +374,41 @@ namespace Best_Pass.BusinessLayer
             FitnessFunctionFactory fitnessFunctionFactory = new FitnessFunctionFactory();
             _newConfig.FitnessFunction = fitnessFunctionFactory.CreateFitnessFunction(nameOfFitnessFunction, paramOfFitness);
             sr.ReadLine();
-            string nameOfMutation = sr.ReadLine();
-            MutationFactory mutationFactory = new MutationFactory();
-            _newConfig.Mutation = mutationFactory.CreateMutation(nameOfMutation);
-            string nameOfSelection = sr.ReadLine();
-            SelectionFactory selectionFactory = new SelectionFactory();
-            _newConfig.Selection = selectionFactory.CreateSelection(nameOfSelection);
-            string nameOfCrossingover = sr.ReadLine();
-            CrossingoverFactory crossingoverFactory = new CrossingoverFactory();
-            _newConfig.Crossingover = crossingoverFactory.CreateCrossingover(nameOfCrossingover);
+            if (_newConfig.AlgMode == Configuration.AlgorithmMode.Singl)
+            {
+                _newConfig.Mutation = _mutationFactory.CreateMutation(sr.ReadLine());
+                _newConfig.Selection = _selectionFactory.CreateSelection(sr.ReadLine());
+                _newConfig.Crossingover = _crossingoverFactory.CreateCrossingover(sr.ReadLine());
+            }
+            else
+            {
+                List<string> aliasMutations = GetAliasForAlgorithms(sr);
+                CreateMutation(_newConfig.AlgMode, aliasMutations);
+                List<string> aliasSelection = GetAliasForAlgorithms(sr);
+                CreateSelection(_newConfig.AlgMode, aliasSelection);
+                List<string> aliasCrossingover = GetAliasForAlgorithms(sr);
+                CreateCrossingover(_newConfig.AlgMode, aliasCrossingover);
+            }
             sr.ReadLine();
             _newConfig.ProbOfMutation = Convert.ToInt16(sr.ReadLine());
             _newConfig.ProbOfCrossingover = Convert.ToInt16(sr.ReadLine());
             sr.Close();
         }
 
+        private List<string> GetAliasForAlgorithms(StreamReader sr)
+        {
+            int count = Convert.ToInt32(sr.ReadLine());
+            List<string> alias = new List<string>();
+            for (int i = 0; i < count; i++)
+            {
+                alias.Add(sr.ReadLine());
+            }
+            return alias;
+        }
+
         public void StartGA()
         {
+            AbstractTrack.ClearCount();
             AbstractTrack[] tracks = new AbstractTrack[_newConfig.Tracks.Length];
             for (int i = 0; i < tracks.Length; i++)
             {
